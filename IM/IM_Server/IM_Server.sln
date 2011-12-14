@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IM_Server", "IM_Server\IM_Server.vcproj", "{33C7F451-F62E-4AA2-8AA6-DB9655ADD420}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33C7F451-F62E-4AA2-8AA6-DB9655ADD420}.Debug|Win32.ActiveCfg = Debug|Win32
+		{33C7F451-F62E-4AA2-8AA6-DB9655ADD420}.Debug|Win32.Build.0 = Debug|Win32
+		{33C7F451-F62E-4AA2-8AA6-DB9655ADD420}.Release|Win32.ActiveCfg = Release|Win32
+		{33C7F451-F62E-4AA2-8AA6-DB9655ADD420}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

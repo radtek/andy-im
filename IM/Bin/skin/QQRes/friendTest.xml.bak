@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="400,50" defaultfontcolor="#FFFFFFFF">
+    <HorizontalLayout name="HorizontalLayoutUI1" width="400" height="50" bkcolor="#FFFFFFFF">
+        <VerticalLayout name="logo_container" width="76" height="50">
+            <Button name="logo" float="true" pos="21,1,0,0" width="32" height="32" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" align="center" />
+        </VerticalLayout>
+        <VerticalLayout name="VerticalLayoutUI2" width="322" height="50">
+            <VerticalLayout name="VerticalLayoutUI3" width="322" height="32">
+                <Label name="nickname" float="true" pos="0,0,0,0" width="321" height="18" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" />
+                <Label name="description" float="true" pos="1,18,0,0" width="318" height="14" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" />
+            </VerticalLayout>
+            <VerticalLayout name="operation" width="319" height="18">
+                <Button name="ButtonUI2" float="true" pos="2,-1,0,0" width="18" height="18" bkimage="friend_circle.png" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" align="center" />
+                <Button name="ButtonUI3" float="true" pos="21,0,0,0" width="18" height="18" bkimage="mail.png" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" align="center" />
+                <Button name="ButtonUI4" float="true" pos="40,0,0,0" width="18" height="18" bkimage="MainPanelServiceBarExt_XiaoYou.png" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" align="center" />
+                <Button name="ButtonUI5" float="true" pos="60,0,0,0" width="18" height="18" bkimage="soso.png" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" align="center" />
+            </VerticalLayout>
+        </VerticalLayout>
+    </HorizontalLayout>
+</Window>

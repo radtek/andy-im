@@ -145,6 +145,29 @@ int DBInterface::GetFriendInfo(vector<USER_INFO> &verfriend,int imid)
 
 	return -1;
 }
+int DBInterface::GetGroupInfo(vector<GROUP_INFO> &vecgroup,int imid)
+{
+	DBEngine *pDB = NULL;
+	ConnGuard oConnGuard(pDB);
+	if (NULL != pDB)
+	{
+		return pDB->GetGroupInfo(vecgroup,imid);
+	}
+
+	return -1;
+}
+//获得群中的用户信息
+int DBInterface::GetGroupUserInfo(vector<USER_INFO> &verfriend,int groupno)
+{
+	DBEngine *pDB = NULL;
+	ConnGuard oConnGuard(pDB);
+	if (NULL != pDB)
+	{
+		return pDB->GetGroupUserInfo(verfriend,groupno);
+	}
+
+	return -1;
+}
 int DBInterface::GetOnlineFriend(vector<int> &vecfriend,int imid)
 {
 	DBEngine *pDB = NULL;

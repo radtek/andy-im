@@ -50,6 +50,9 @@ public:
 
 	int GetGroupInfo(vector<GROUP_INFO> &vecgroup,int imid);
 
+	//获得群中的用户信息
+	int GetGroupUserInfo(vector<USER_INFO> &verfriend,int groupno);
+
 	int GetOnlineFriend(vector<int> &vecfriend,int imid);
 public:
 /////////////////////////存储过程///////////////////////////////////////////

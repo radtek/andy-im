@@ -114,6 +114,8 @@ private:
 	void SendFriendMsg(const Message & stMsg);
 	//获取群信息
 	void GetGroupinfo(const Message & stMsg);
+	//获取群成员信息
+	void GetGroupUserinfo(const Message & stMsg);
 };
 
 #endif

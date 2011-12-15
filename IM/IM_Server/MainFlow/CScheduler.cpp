@@ -341,7 +341,7 @@ void CScheduler::GetUserinfo(const Message & stMsg)
 	user.id = usrNo;
 	if (0==g_pDBInterface->GetUserInfo(user))
 	{
-		char sendbuff[200]={0};
+		//char sendbuff[200]={0};
 		int len_name=strlen(user.nick_name.c_str());
 		int len_sing = strlen(user.description.c_str());
 
@@ -381,7 +381,7 @@ void CScheduler::GetFriendinfo(const Message & stMsg)
 				LOGININFO loginfo;
 				//获得在线状态
 				g_pDBInterface->GetLoginState(friendid,loginfo);
-				char sendbuff[200]={0};
+				//char sendbuff[200]={0};
 				int len_name = strlen(verfriend[i].nick_name.c_str());
 				int len_sing = strlen(verfriend[i].description.c_str());
 				int len_total = 4+1+1+len_name+len_sing+4;
@@ -413,11 +413,74 @@ void CScheduler::GetGroupinfo(const Message & stMsg)
 
 	vector<GROUP_INFO> vecgroup;
 	int usrNo = stMsg.iClientID; //clientID为IM号码
-	if (0==g_pDBInterface->GetFriendInfo(vecgroup,usrNo))
+	if (0==g_pDBInterface->GetGroupInfo(vecgroup,usrNo))
 	{
+		int size = vecgroup.size();
+         if (size > 0)
+         {
+			 for (int i = 0; i <size; i++)
+			 {
 
+				// char sendbuff[200]={0};
+				 int len_name=strlen(vecgroup[i].groupname.c_str());
+				 int len_sign=strlen(vecgroup[i].description.c_str());
+				 int totallen = 4+2+len_name+len_sign;
+				 CSendBuff oSendBuf;
+				 oSendBuf.AddByte(CMD_REAL_HEAD);  // 帧头
+				 oSendBuf.AddInt(stMsg.iCmdID);      // 流水号
+				 oSendBuf.AddByte(CMD_GET_USER);  // 命令字
+				 oSendBuf.AddInt(totallen);               // 消息长
+				 oSendBuf.AddInt(vecgroup[i].id)
+				 oSendBuf.AddByte((BYTE)len_name); //用户名称长度
+				 oSendBuf.AddBytes((BYTE*)vecgroup[i].groupname.c_str(),len_name);//用户名
+				 oSendBuf.AddByte((BYTE)len_sign);//签名程度
+				 oSendBuf.AddBytes((BYTE*)vecgroup[i].description.c_str(),len_sign);
+				 oSendBuf.AddByte(CMD_REAL_TAIL);  // 帧尾
+				 g_pPendingSendQueue->AppendDataToBack(stMsg.iClientID, stMsg.iCmdID,stMsg.byCmdCode, oSendBuf.GetBuffer(), oSendBuf.GetLength());
+			 }
+           
+         }
 	}
 
+}
+
+//获取群成员信息
+void CScheduler::GetGroupUserinfo(const Message & stMsg)
+{
+	int usrNo = stMsg.iClientID; //clientID为IM号码
+	CRecvBuff oContentBuf(stMsg.pbyCmdContent, stMsg.iCmdLen,TRUE);
+	//取出群号码
+	int groupno;
+	oContentBuf.GetInt(groupno);
+	vector<USER_INFO> verUser;
+	if (0==g_pDBInterface->GetGroupUserInfo(verUser,groupno))
+	{
+		int size = verUser.size();
+		if (size >0)
+		{ 
+			for(int i = 0; i < size; i++)
+			{
+				int len_name=strlen(verUser[i].nick_name.c_str());
+				int len_sign=strlen(verUser[i].description.c_str());
+				int totallen = 4+2+len_name+len_sign+4;
+				CSendBuff oSendBuf;
+				oSendBuf.AddByte(CMD_REAL_HEAD);  // 帧头
+				oSendBuf.AddInt(stMsg.iCmdID);      // 流水号
+				oSendBuf.AddByte(CMD_GET_USER);  // 命令字
+				oSendBuf.AddInt(totallen);               // 消息长
+				oSendBuf.AddInt(verUser[i].id)
+				oSendBuf.AddInt(verUser[i].type)
+				oSendBuf.AddByte((BYTE)len_name); //用户名称长度
+				oSendBuf.AddBytes((BYTE*)verUser[i].nick_name.c_str(),len_name);//用户名
+				oSendBuf.AddByte((BYTE)len_sign);//签名程度
+				oSendBuf.AddBytes((BYTE*)verUser[i].description.c_str(),len_sign);
+				oSendBuf.AddByte(CMD_REAL_TAIL);  // 帧尾
+				g_pPendingSendQueue->AppendDataToBack(stMsg.iClientID, stMsg.iCmdID,stMsg.byCmdCode, oSendBuf.GetBuffer(), oSendBuf.GetLength());
+			}
+		}
+	}
+			
+			
 }
 void CScheduler::SendFriendMsg(const Message & stMsg)
 {

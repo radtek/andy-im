@@ -331,6 +331,114 @@ int DBEngine::GetFriendInfo(vector<USER_INFO> &verfriend,int imid)
 	}
 	return 0;
 }
+int DBEngine::GetGroupInfo(vector<GROUP_INFO> &vecgroup,int imid)
+{
+	if (!m_bDBOpen)
+	{
+		return -1;
+	}
+	// 创建Command对象
+	_CommandPtr cmd;
+	HRESULT hr = cmd.CreateInstance(__uuidof(Command));
+	if (FAILED(hr))
+	{
+		return -1;
+	}
+	char szSQL[SQL_BUFFER_LEN] = {0};
+	sprintf(szSQL, "select groupno,groupname,sign from groupinfo where imno=%d",
+		imid);
+	cmd->ActiveConnection = _connection_ptr;
+	cmd->CommandText = _bstr_t(szSQL);
+	cmd->CommandType = adCmdText;
+	try 
+	{
+		_RecordsetPtr rs = cmd->Execute(NULL, NULL, adCmdUnknown);
+
+		if (FAILED(hr)) 
+		{
+			return -1;
+		}
+		while (!rs->ADOEOF)
+		{     
+			_variant_t		_v_groupno;
+			_variant_t		_v_groupname;
+			_variant_t      _v_sign;
+
+			_v_groupno = rs->GetCollect("groupno");
+			_v_groupname = rs->GetCollect("groupname");
+			_v_sign = rs->GetCollect("sign");
+
+			GROUP_INFO group;
+			group.id = (int)(long)_v_groupno;
+			VarientToString(_v_groupname, group.groupname);
+			VarientToString(_v_sign, group.description);
+
+			vecgroup.push_back(group);
+
+			rs->MoveNext() ;
+		}
+	}
+	catch (_com_error &err)
+	{
+		//		TRACE(_T("数据库操作失败! 错误信息:%s, 文件:%s, 行:%d.\n"), err.ErrorMessage(), __FILE__, __LINE__);
+
+		return -1;
+	}
+	return 0;
+}
+int DBEngine::GetGroupUserInfo(vector<USER_INFO> &verfriend,int groupno)
+{
+	if (!m_bDBOpen)
+	{
+		return -1;
+	}
+	// 创建Command对象
+	_CommandPtr cmd;
+	HRESULT hr = cmd.CreateInstance(__uuidof(Command));
+	if (FAILED(hr))
+	{
+		return -1;
+	}
+	char szSQL[SQL_BUFFER_LEN] = {0};
+	sprintf(szSQL, "select imno,name from groupinfo where groupno=%d",
+		groupno);
+	cmd->ActiveConnection = _connection_ptr;
+	cmd->CommandText = _bstr_t(szSQL);
+	cmd->CommandType = adCmdText;
+	try 
+	{
+		_RecordsetPtr rs = cmd->Execute(NULL, NULL, adCmdUnknown);
+
+		if (FAILED(hr)) 
+		{
+			return -1;
+		}
+		while (!rs->ADOEOF)
+		{     
+			_variant_t		_v_imno;
+			_variant_t		_v_username;
+
+			_v_imno = rs->GetCollect("imno");
+			_v_username = rs->GetCollect("name");
+
+			USER_INFO user;
+			user.id = (int)(long)_v_imno;
+			VarientToString(_v_username, user.nick_name);
+
+
+			verfriend.push_back(user);
+
+			rs->MoveNext() ;
+		}
+	}
+	catch (_com_error &err)
+	{
+		//		TRACE(_T("数据库操作失败! 错误信息:%s, 文件:%s, 行:%d.\n"), err.ErrorMessage(), __FILE__, __LINE__);
+
+		return -1;
+	}
+	return 0;
+}
 int DBEngine::GetLoginState(int imno,LOGININFO &loginfo)
 {
 	if (!m_bDBOpen)

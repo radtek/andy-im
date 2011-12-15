@@ -40,6 +40,10 @@ public:
 	int			GetLoginState(int imno,LOGININFO &loginfo);
     //获取好友信息
 	int			GetFriendInfo(vector<USER_INFO> &verfriend,int imid);
+	//获得群信息
+	int			GetGroupInfo(vector<GROUP_INFO> &vecgroup,int imid);
+	//获得群中的用户信息
+	int         GetGroupUserInfo(vector<USER_INFO> &verfriend,int groupno);
   
     //获得在线好友
 	int         GetOnlineFriend(vector<int> &vecfriend,int imid);
@@ -48,7 +52,7 @@ public:
 
 	int          GetIpByName(string  name, string &ip,int &port);
 
-	int           UpdateIpByName(string name,string ip,int port);
+	int          UpdateIpByName(string name,string ip,int port);
 
 	//int           GetFriendinfoByNmae(LPCTSTR name,vector<friend_info> &vecfriend);
 

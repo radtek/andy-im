@@ -803,14 +803,14 @@ typedef struct tag_group_info
 {
 	unsigned int id;
     string logo;
-	string nick_name;
+	string groupname;
 	string description;
 	tag_group_info()
 	{
 		id=-1;
 		logo="";
-		nick_name="";
 		description="";
+		groupname="";
 	}
 	
 

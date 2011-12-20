@@ -10,9 +10,9 @@ struct FriendListItemInfo
 	bool folder;
 	bool empty;
 	unsigned int id;
-	char logo[MAX_PATH];
-	char nick_name[50];
-	char description[100];
+	TCHAR logo[MAX_PATH];
+	TCHAR nick_name[50];
+	TCHAR description[100];
 	int type;//ÔÚÏß×´Ì¬
 	FriendListItemInfo()
 	{

@@ -22,7 +22,7 @@ public:
 	void				Run();
 private:
 	void				TrimLeft(std::string & str);
-	BOOL				IsSpace(char c);
+	BOOL				IsSpace(TCHAR c);
 	void				ResetClientTime(int iServerTime);
 	//void				WriteTimeIniFile(S_TIME_STRATEGY& oTimeDataStrategy);
 	//void				ReceivePhoneRenewMsg(CRecvBuff& recvDataBuff, BOOL &m_bDataRenewed,WORD wMsgCount);
@@ -30,14 +30,14 @@ private:
 	//void				RenewRFIDPhoneStrategy(S_PHONE_STRATEGY &oPhoneDataStrategy,  std::ofstream & oFile);
 	//void				RenewTimeStrategy(S_TIME_STRATEGY &oTimeDataStrategy, const std::ofstream & oFile);
 	void				SendShakeMsg(S_SHAKE_DATA& pShakeData);
-	void				SplitPacket(char* pData, int iCount);
-	void				RenewHandShake(char* pData, int iCount);
+	void				SplitPacket(TCHAR* pData, int iCount);
+	void				RenewHandShake(TCHAR* pData, int iCount);
 	//自动升级
 	//BOOL                AutoUpdate(string &strInfo);
 	//上传日志文件给服务器
 	//BOOL                UploadLogFile(string &strUser, string &strPass,string &strLogData);
-	int                 Base64Dec(char *buf,char*text,int size);
-    char                GetBase64Value(char ch);
+	int                 Base64Dec(TCHAR *buf,TCHAR*text,int size);
+    char                GetBase64Value(TCHAR ch);
 
  
 private:

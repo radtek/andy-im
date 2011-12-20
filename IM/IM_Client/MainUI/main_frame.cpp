@@ -270,13 +270,13 @@ void MainFrame::AddUIList(int parent,const FriendListItemInfo list)
 				{
 	
 
-					sprintf((char*)list.logo,_T("%s"),"..\\face\\user_on.bmp");
+					_stprintf((TCHAR*)list.logo,_T("%s"),_T("..\\face\\user_on.bmp"));
 	
 				}
 				else
 				{
-					CreateOffBmp("user_on.bmp","user_off.bmp");
-					sprintf((char*)list.logo,_T("%s"),"..\\face\\user_off.bmp");
+					CreateOffBmp(_T("user_on.bmp"),_T("user_off.bmp"));
+					_stprintf((TCHAR*)list.logo,_T("%s"),_T("..\\face\\user_off.bmp"));
 				}
 			     vec_friends.push_back(list);
 
@@ -361,7 +361,7 @@ void MainFrame::UpdateFriend(unsigned int imid)
 	{			
 			if(vec_friends[i].id == imid)
 			{
-				sprintf((char*)(vec_friends[i].logo),_T("%s"),"user_on.bmp");
+				_stprintf((TCHAR*)(vec_friends[i].logo),_T("%s"),_T("user_on.bmp"));
 				vec_friends[i].type = 1;
 
 			}
@@ -386,26 +386,26 @@ void MainFrame::CreateFriendsList()
 		item.id = 0;
 		item.folder = true;
 		item.empty = false;
-		sprintf(item.nick_name,_T("%s"),_T("我的好友"));
+		_stprintf(item.nick_name,_T("%s"),_T("我的好友"));
 		//item.nick_name = _T("我的好友");
 		root_parent_myfriend = pFriendsList->AddNode(item, NULL);
 		vec_friends.push_back(item);
 
 		item.id = 1;
 		//item.nick_name = _T("企业好友");
-		sprintf(item.nick_name,_T("%s"),_T("企业好友"));
+		_stprintf(item.nick_name,_T("%s"),_T("企业好友"));
 		root_parent_company = pFriendsList->AddNode(item, NULL);
 		vec_friends.push_back(item);
 
 		item.id = 2;
 		//item.nick_name = _T("陌生人");
-		sprintf(item.nick_name,_T("%s"),_T("陌生人"));
+		_stprintf(item.nick_name,_T("%s"),_T("陌生人"));
 		root_parent_stranger = pFriendsList->AddNode(item, NULL);
 		vec_friends.push_back(item);
 
 		item.id = 3;
 		//item.nick_name = _T("黑名单");
-		sprintf(item.nick_name,_T("%s"),_T("黑名单"));
+		_stprintf(item.nick_name,_T("%s"),_T("黑名单"));
 		root_parent_blacklist= pFriendsList->AddNode(item, NULL);
 		vec_friends.push_back(item);
 
@@ -830,7 +830,7 @@ LRESULT MainFrame::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 		MSGBODY *body = (MSGBODY*)wParam;
 		CStdString strMsg,strUser,strfriendName;
 
-		SHowChatDlg(body->imid,(char*)body->msg);
+		SHowChatDlg(body->imid,(TCHAR*)body->msg);
 	}
 	else if (uMsg == MSG_GETFRIEND)
 	{
@@ -850,7 +850,7 @@ void MainFrame::SetUser(LPCTSTR strName,LPCTSTR sign)
 	{
 		pUser->SetText(strName);
 
-		sprintf((char*)m_strUser.c_str(),"%s",strName);
+		_stprintf((TCHAR*)m_strUser.c_str(),_T("%s"),strName);
 		//m_strUser = strName;
 	}
 
@@ -860,14 +860,14 @@ void MainFrame::SetUser(LPCTSTR strName,LPCTSTR sign)
 		psign->Invalidate();
 	}
 
-	sprintf((char*)m_myself_info.nick_name,"%s",strName);
-	sprintf((char*)m_myself_info.description,"%s",sign);
+	_stprintf((TCHAR*)m_myself_info.nick_name,_T("%s"),strName);
+	_stprintf((TCHAR*)m_myself_info.description,_T("%s"),sign);
 
 	//现在获取好友信息了.如果用户名不为空哈
-    if(strcmp(strName,"")!=0)
+    if(_tcscmp(strName,_T(""))!=0)
 	{
 	
-        m_pTcpCommunication->SendBuffer(CMD_GET_FRIEND,"3",1);
+        m_pTcpCommunication->SendBuffer(CMD_GET_FRIEND,_T("3"),1);
 	}
 
 	
@@ -884,7 +884,7 @@ void MainFrame::FindFriend(unsigned int imid)
 		}
 	}
 }
-void MainFrame::SHowChatDlg(unsigned int imid,char *strmsg)
+void MainFrame::SHowChatDlg(unsigned int imid,TCHAR *strmsg)
 {
 	CControlUI* background = paint_manager_.FindControl(kBackgroundControlName);
 	if ((background != NULL))

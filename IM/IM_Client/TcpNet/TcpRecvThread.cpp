@@ -54,7 +54,7 @@ CTcpRecvThread::~CTcpRecvThread()
 void CTcpRecvThread::Run()
 {
 	// 准备一个接收用的缓冲区
-	char buff[RENEW_MAX_LEN];
+	TCHAR buff[RENEW_MAX_LEN];
 	memset(buff, 0, RENEW_MAX_LEN);
 
 	while ( !IsNeedStop() ) 
@@ -115,7 +115,7 @@ void CTcpRecvThread::Stop()
 /**************************************************
 对接收到的数据包进行处理函数
 ******************************************************/
-void CTcpRecvThread::RenewHandShake(char* pData, int iCount)
+void CTcpRecvThread::RenewHandShake(TCHAR* pData, int iCount)
 {
  
 	//接收到的数据放入接收缓存	
@@ -205,8 +205,8 @@ void CTcpRecvThread::RenewHandShake(char* pData, int iCount)
 			FriendListItemInfo friendinfo;
 			friendinfo.id = imno;
 			friendinfo.type = type;
-			_stprintf_s((char*)friendinfo.nick_name, 50 - 1, _T("%s"), (char*)byUser);
-			_stprintf_s((char*)friendinfo.description, 100 - 1, _T("%s"), (char*)bysign);
+			_stprintf_s((TCHAR*)friendinfo.nick_name, 50 - 1, _T("%s"), (char*)byUser);
+			_stprintf_s((TCHAR*)friendinfo.description, 100 - 1, _T("%s"), (char*)bysign);
 			//m_pTcpCommu->frame_wnd_->AddUIList(ADD_LIST_FRIEND,friendinfo);
 			 m_pTcpCommu->frame_wnd_->SendMessage(MSG_GETFRIEND,(WPARAM)&friendinfo,0);
 
@@ -228,7 +228,7 @@ void CTcpRecvThread::RenewHandShake(char* pData, int iCount)
 
 			MSGBODY  msgbody;
 			msgbody.imid = imno;
-			sprintf(msgbody.msg,_T("%s"),(char*)byMsg);
+			_stprintf(msgbody.msg,_T("%s"),(char*)byMsg);
 			//::SendMessage(m_wnd,MSG_HAVEDATA,(WPARAM)&msgbody,0);
 			if (strlen((char*)byMsg) !=0)
 			{
@@ -244,6 +244,16 @@ void CTcpRecvThread::RenewHandShake(char* pData, int iCount)
 			int imno;
 			recvBuff.GetInt(imno);
 			m_pTcpCommu->frame_wnd_->UpdateFriend(imno);
+		}
+		break;
+	case CMD_GET_GROUP:
+		{
+            //int  
+		}
+		break;
+	case CMD_GET_GROUP_USER:
+		{
+
 		}
 		break;
 	default:
@@ -270,7 +280,7 @@ void CTcpRecvThread::SendShakeMsg(S_SHAKE_DATA& oShakeData)
 	oShakeBuff.AddByte(CMD_REAL_TAIL);    //construct a shake hand data struct
     if (oShakeBuff.GetLength() > 0 && (m_bConnected))
 	{
-		int nRet = m_pTcpCommu->Send((char *)oShakeBuff.GetBuffer(), oShakeBuff.GetLength());
+		int nRet = m_pTcpCommu->Send((TCHAR *)oShakeBuff.GetBuffer(), oShakeBuff.GetLength());
 					
 		if ( nRet == SOCKET_ERROR)
 		{
@@ -313,7 +323,7 @@ void CTcpRecvThread::ResetClientTime(int iServerTime)
 		 SetLocalTime( &serst);
 	      
 		 string		strTime;
-		 sprintf((char*)strTime.c_str(),_T("%04u.%02u.%02u %02u:%02u:%02u.%03u"),serst.wYear, 
+		 _stprintf((TCHAR*)strTime.c_str(),_T("%04u.%02u.%02u %02u:%02u:%02u.%03u"),serst.wYear, 
 			 serst.wMonth, 
 			 serst.wDay, 
 			 serst.wHour, 
@@ -324,12 +334,12 @@ void CTcpRecvThread::ResetClientTime(int iServerTime)
 	}
 }
 
-void CTcpRecvThread::SplitPacket(char* pData, int iCount)
+void CTcpRecvThread::SplitPacket(TCHAR* pData, int iCount)
 {
 	// 从受消息的缓冲区放到命令队列
 	if ((m_iBufferLength + iCount) > BIG_BUFFER)
 	{
-		g_pSvrLog->AddRunLog(LL_ERROR, "[通信信息]：Msg Buffer Error, iLength = %d, m_iBufferLength = %d", iCount, m_iBufferLength);
+		g_pSvrLog->AddRunLog(LL_ERROR, _T("[通信信息]：Msg Buffer Error, iLength = %d, m_iBufferLength = %d"), iCount, m_iBufferLength);
         // 丢弃本次的数据，重新开始
 		return;
 	}
@@ -411,7 +421,7 @@ void CTcpRecvThread::SplitPacket(char* pData, int iCount)
 
 }
 
-BOOL CTcpRecvThread::IsSpace(char c)
+BOOL CTcpRecvThread::IsSpace(TCHAR c)
 {
 	switch (c)     
 	{   
@@ -643,7 +653,7 @@ int CTcpRecvThread::Base64Dec(char *buf,char*text,int size)
 	return parsenum;
 } 
 
-char CTcpRecvThread::GetBase64Value(char ch)
+char CTcpRecvThread::GetBase64Value(TCHAR ch)
 {
 	if ((ch >= 'A') && (ch <= 'Z')) 
 		return ch - 'A'; 

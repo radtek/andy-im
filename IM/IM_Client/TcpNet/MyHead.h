@@ -85,6 +85,8 @@ typedef struct _S_SHAKE_DATA
 #define     CMD_FRIEND_ONLINE        5  // 还有上线
 #define     CMD_GET_GROUP             6//获取群信息
 #define     CMD_TIME_CHECK              7  // 时间校验
+#define     CMD_GET_GROUP_USER        8//获取群用户信息
+
 
 
 
@@ -95,7 +97,7 @@ typedef struct _S_SHAKE_DATA
 typedef struct tag_MSGBODY 
 {
 	unsigned int imid;
-    char msg[256];
+    TCHAR msg[256];
 	tag_MSGBODY()
 	{
 		imid = -1;

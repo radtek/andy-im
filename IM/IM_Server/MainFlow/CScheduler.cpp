@@ -113,10 +113,12 @@ void CScheduler::MessageDispatch(BYTE* pbBuffer, int iLen)
 
     case CMD_GET_GROUP: // 获取群信息
        // UpdateStrategyNotice(stMsg);
+		GetGroupinfo(stMsg);
 		break;
 
-	case CMD_UPDATE_STUDENT_INFO: // 更新学生数据
+	case CMD_GET_GROUP_USER: // 获取群用户信息
        // UpdateStudentInfoNotice(stMsg);
+		GetGroupUserinfo(stMsg);
 		break;
 
 	case CMD_REQUEST_STUDENT_INFO: // 请求学生信息的命令

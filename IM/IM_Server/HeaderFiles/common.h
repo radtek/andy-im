@@ -741,11 +741,11 @@ const int eSMGP_NEED_INIT		 =6;				//	接口尚未初始化
 #define     CMD_SEND_MSG        4  // 发送消息，服务器转发
 #define     CMD_FRIEND_ONLINE        5  // 还有上线
 #define     CMD_GET_GROUP             6//获取群信息
-
-
+#define     CMD_TIME_CHECK              7  // 时间校验
+#define     CMD_GET_GROUP_USER        8//获取群用户信息
 
 //#define     CMD_UPDATE_COMPLETE         6  // 更新完毕
-#define     CMD_TIME_CHECK              7  // 时间校验
+
 #define     CMD_DATA_UPDATE_NOTICE_RESP 8  // 更新通知返回消息
 #define     CMD_UPDATE_STRATEGY         9  // 更新策略
 #define     CMD_UPDATE_STUDENT_INFO     10 // 更新学生信息

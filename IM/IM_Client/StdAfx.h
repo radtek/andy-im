@@ -60,14 +60,14 @@ typedef std::basic_string<TCHAR> tString;
 #       pragma comment(lib, "..\\bin\\DuiLib_ud.lib")
 #   else
 #       pragma comment(lib, "..\\bin\\DuiLib_d.lib")
-#       pragma comment(lib, "..\\bin\\DBLib_d.lib")
+//#       pragma comment(lib, "..\\bin\\DBLib_d.lib")
 #   endif
 #else
 #   ifdef _UNICODE
 #       pragma comment(lib, "..\\bin\\DuiLib_u.lib")
 #   else
 #       pragma comment(lib, "..\\bin\\DuiLib.lib")
-#       pragma comment(lib, "..\\bin\\DBLib.lib")
+//#       pragma comment(lib, "..\\bin\\DBLib.lib")
 #   endif
 #endif
 

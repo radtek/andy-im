@@ -194,7 +194,7 @@ void ChatDialog::Init()
 		string strIp;
 
 		//frame_wnd_->m_pDBLib->GetIpByName(friend_.nick_name,strIp,m_iFriendPort);
-		m_strFriendip.Format("%s",strIp.c_str());
+		m_strFriendip.Format(_T("%s"),strIp.c_str());
     }
 }
 
@@ -278,7 +278,7 @@ void ChatDialog::SendMsg(CStdString name,CStdString sText)
     lSelEnd = lSelBegin = pRichEdit->GetTextLength();
     pRichEdit->SetSel(lSelEnd, lSelEnd);
 	CTime time = CTime::GetCurrentTime();
-	CStdString sendTime = time.Format("%H:%M:%S");
+	CStdString sendTime = time.Format(_T("%H:%M:%S"));
 	CStdString sendtimestr;
 	sendtimestr.Format(_T("说:\t%s\n"),sendTime);
 	pRichEdit->ReplaceSel(sendtimestr, false);
@@ -398,21 +398,21 @@ void ChatDialog::Notify(TNotifyUI& msg)
 			if (textlen > 512)
 			{  
 				pViewEdit->SetTextColor(RGB(255,0,0,));
-				pViewEdit->SetText("错误！发送数据的长度不能超过512字节。"); 
+				pViewEdit->SetText(_T("错误！发送数据的长度不能超过512字节。")); 
 			}
 			else
 			{
 				int imNum = friend_.id;
-				char sendmesg[513] = {0};
+				TCHAR sendmesg[513] = {0};
 
 
-				sprintf_s(sendmesg,512,"%s",sText.GetData());
+				_stprintf_s(sendmesg,512,_T("%s"),sText.GetData());
 				int len = strlen(sendmesg);
 
 				if (len !=textlen)
 				{
 					pViewEdit->SetTextColor(RGB(255,0,0,));
-					pViewEdit->SetText("警告！发送数据的长度和计算的不同。"); 
+					pViewEdit->SetText(_T("警告！发送数据的长度和计算的不同。")); 
 				}
 				frame_wnd_->m_pTcpCommunication->SendMsg(imNum,sendmesg,textlen);
 				//显示在
@@ -439,21 +439,21 @@ void ChatDialog::Notify(TNotifyUI& msg)
 			if (textlen > 512)
 			{  
 				pViewEdit->SetTextColor(RGB(255,0,0,));
-				pViewEdit->SetText("错误！发送数据的长度不能超过512字节。"); 
+				pViewEdit->SetText(_T("错误！发送数据的长度不能超过512字节。")); 
 			}
 			else
 			{
 				int imNum = friend_.id;
-				char sendmesg[513] = {0};
+				TCHAR sendmesg[513] = {0};
                  
 				
-				sprintf_s(sendmesg,512,"%s",sText.GetData());
+				_stprintf_s(sendmesg,512,_T("%s"),sText.GetData());
                 int len = strlen(sendmesg);
 
 				if (len !=textlen)
 				{
 					pViewEdit->SetTextColor(RGB(255,0,0,));
-					pViewEdit->SetText("警告！发送数据的长度和计算的不同。"); 
+					pViewEdit->SetText(_T("警告！发送数据的长度和计算的不同。")); 
 				}
 				frame_wnd_->m_pTcpCommunication->SendMsg(imNum,sendmesg,textlen);
 				//显示在

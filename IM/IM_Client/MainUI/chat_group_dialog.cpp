@@ -323,7 +323,7 @@ void ChatGroupDialog::SendMsg(CStdString name,CStdString sText)
 	lSelEnd = lSelBegin = pRichEdit->GetTextLength();
 	pRichEdit->SetSel(lSelEnd, lSelEnd);
 	CTime time = CTime::GetCurrentTime();
-	CStdString sendTime = time.Format("%H:%M:%S");
+	CStdString sendTime = time.Format(_T("%H:%M:%S"));
 	CStdString sendtimestr;
 	sendtimestr.Format(_T("˵:\t%s\n"),sendTime);
 	pRichEdit->ReplaceSel(sendtimestr, false);

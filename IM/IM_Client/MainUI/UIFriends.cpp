@@ -243,7 +243,7 @@ Node* CFriendsUI::AddNode(const FriendListItemInfo& item,Node* parent)
 	CButtonUI* log_button = static_cast<CButtonUI*>(paint_manager_.FindSubControlByName(pListElement, kLogoButtonControlName));
 	if (log_button != NULL)
 	{
-		if (!item.folder && strlen(item.logo)>0)
+		if (!item.folder && lstrlen(item.logo)>0)
 		{
                 //"file='user_on.bmp' mask='#000000'"
 			    //"file='tree_top.png' corner='2,1,2,1' fade='100'"
@@ -358,17 +358,17 @@ void CFriendsUI::FrontAddNode(const FriendListItemInfo& item,Node* parent)
 		if (log_button != NULL)
 		{
 
-			sprintf(itemprev.logo,"%s",log_button->GetNormalImage());
+			_stprintf((TCHAR*)itemprev.logo,_T("%s"),log_button->GetNormalImage());
 
 		}
-		sprintf(itemprev.nick_name,"%s",prev->data().text_.data());
+		_stprintf(itemprev.nick_name,_T("%s"),prev->data().text_.data());
 		CLabelUI* description = static_cast<CLabelUI*>(paint_manager_.FindSubControlByName(prev->data().list_elment_, kDescriptionControlName));
 		if (description)
 		{
-			char strdescripte[200]={0};
-			sprintf(strdescripte,"%s",description->GetText().GetData());
+			TCHAR strdescripte[200]={0};
+			_stprintf(strdescripte,_T("%s"),description->GetText().GetData());
 
-			int len = strlen(strdescripte);
+			int len = lstrlen(strdescripte);
 			//<x 20><c #808080> </c>
 			memcpy(itemprev.description,strdescripte+17,len -17-4);
 		}

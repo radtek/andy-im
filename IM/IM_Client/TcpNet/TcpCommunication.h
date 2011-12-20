@@ -28,11 +28,11 @@ public:
 	// 封装了的Socket，提供一个操作的借口
     BOOL				InitSocket();
 	void				CloseSocket();
-	int					Send(char* szMsg, int nLen);
-	int					Recv(char* szMsg, int nLen);
+	int					Send(TCHAR* szMsg, int nLen);
+	int					Recv(TCHAR* szMsg, int nLen);
 	int					SendClietReg();
-	void                SendBuffer(int type,char *buff,int len);//发包
-	void                SendMsg(unsigned int imid,char *buff,int len);//发送消息
+	void                SendBuffer(int type,TCHAR *buff,int len);//发包
+	void                SendMsg(unsigned int imid,TCHAR *buff,int len);//发送消息
 private:
 	//CWriteFileThread	*m_pWriteFileThread;
 	DWORD				m_dwServerPort;

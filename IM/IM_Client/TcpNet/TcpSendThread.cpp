@@ -192,7 +192,7 @@ int CTcpSendThread::SendBuildDatas( )
 int CTcpSendThread::SendConnectPacket()
 {
 	// ·¢ËÍ¿ÕÏûÏ¢
-	return m_pTcpComm->Send("", 0);
+	return m_pTcpComm->Send(_T(""), 0);
 }
 
 //int CTcpSendThread::SendRenewRequest(BYTE MsgType,int type)

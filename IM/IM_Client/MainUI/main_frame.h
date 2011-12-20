@@ -14,20 +14,6 @@
 #define  ADD_LIST_STRANGER  3
 #define  ADD_LIST_BLACKLIST 4
 
-
-typedef struct tag_chatdlg_info
-{
-	string strfriendName;
-	ChatDialog *pchat;
-	tag_chatdlg_info()
-	{
-		strfriendName = _T("");
-
-		pchat = NULL;
-
-	}
-}chatdlg_info;
-
 class WindowImplBase;
 class MainFrame : public WindowImplBase
 {
@@ -113,7 +99,7 @@ public:
 	HANDLE RegOnlyWindow(LPCTSTR szMutex);
 	void SetUser(LPCTSTR strName,LPCTSTR sign);
     //imid为IM号码，findflag指示是否根据imid查找friendlist
-	void SHowChatDlg(unsigned int imid,char* strmsg);
+	void SHowChatDlg(unsigned int imid,TCHAR* strmsg);
 
 
 	void AddUIList(int parent,const FriendListItemInfo listitem);

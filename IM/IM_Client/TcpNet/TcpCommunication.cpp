@@ -125,7 +125,7 @@ BOOL CTcpCommunication::StopService()
 //1   登录消息。发送用户名和密码
 //2   获取用户信息
 //3    获取好友信息
-void CTcpCommunication::SendBuffer(int type ,char *buff,int len)
+void CTcpCommunication::SendBuffer(int type ,TCHAR *buff,int len)
 {
 	
 	SYSTEMTIME ct;
@@ -147,13 +147,13 @@ void CTcpCommunication::SendBuffer(int type ,char *buff,int len)
 
 	IMMsg *pmsg = new IMMsg;
 	pmsg->iLen = oSndBuff->GetLength();
-	pmsg->szSendBuf = (char*)oSndBuff->GetBuffer();
+	pmsg->szSendBuf = (TCHAR*)oSndBuff->GetBuffer();
 	m_pTcpSendThread->m_pSynsendList->AddTail(pmsg);
 
 }
 //imid 对方 im号码
 //buff 消息内容
-void CTcpCommunication::SendMsg(unsigned int imid,char *buff,int bufflen)
+void CTcpCommunication::SendMsg(unsigned int imid,TCHAR *buff,int bufflen)
 {
 	SYSTEMTIME ct;
 	GetLocalTime( &ct);
@@ -180,7 +180,7 @@ void CTcpCommunication::SendMsg(unsigned int imid,char *buff,int bufflen)
 	oSndBuff->AddByte(CMD_REAL_TAIL);
 	IMMsg *pmsg = new IMMsg;
 	pmsg->iLen = oSndBuff->GetLength();
-	pmsg->szSendBuf = (char*)oSndBuff->GetBuffer();
+	pmsg->szSendBuf = (TCHAR*)oSndBuff->GetBuffer();
 	m_pTcpSendThread->m_pSynsendList->AddTail(pmsg);
 }
 BOOL CTcpCommunication::InitSocket()
@@ -256,7 +256,7 @@ void CTcpCommunication::CloseSocket()
 	LeaveCriticalSection(&m_csSocket);
 }
 
-int CTcpCommunication::Send(char* szMsg, int nLen)
+int CTcpCommunication::Send(TCHAR* szMsg, int nLen)
 {
 	int err;
 	TIMEVAL	timeout;
@@ -283,7 +283,7 @@ int CTcpCommunication::Send(char* szMsg, int nLen)
 	
 }
 
-int CTcpCommunication::Recv(char* szMsg, int nLen)
+int CTcpCommunication::Recv(TCHAR* szMsg, int nLen)
 {
 	//select超时检查
 	int	nRecvCount = -1;
@@ -328,7 +328,7 @@ int CTcpCommunication::SendClietReg()
     oShakeBuff.AddByte(CMD_REAL_HEAD);   
 	oShakeBuff.AddInt(g_ClientID);  //学校的ClientID
 	oShakeBuff.AddByte(CMD_REAL_TAIL);    //construct a shake hand data struct
-	int nRet = Send((char *)oShakeBuff.GetBuffer(),  oShakeBuff.GetLength());
+	int nRet = Send((TCHAR *)oShakeBuff.GetBuffer(),  oShakeBuff.GetLength());
 	if (nRet == SOCKET_ERROR)
 	{
         return nRet;

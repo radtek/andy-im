@@ -40,10 +40,10 @@ void UILogin::OnPrepare(TNotifyUI& msg)
 {
 	 CComboUI* pAccountCombo = static_cast<CComboUI*>(paint_manager_.FindControl(_T("accountcombo")));
 	 CControlUI * plist  = new CListLabelElementUI();
-	 plist->SetText("666666");
+	 plist->SetText(_T("666666"));
 	 pAccountCombo->AddAt(plist,2);
      CControlUI * plist1  = new CListLabelElementUI();
-	 plist1->SetText("333333");
+	 plist1->SetText(_T("333333"));
 	 pAccountCombo->AddAt(plist1,3);
 
 	app_loadgif =static_cast<CControlUI*>(paint_manager_.FindControl(_T("LabelUI1")));
@@ -64,12 +64,12 @@ int UILogin::login()
 	CStdString strUser,strPsw;
 	if (pedituser && ppsw)
 	{
-		plable->SetText("正在登录，请稍等madie...");
+		plable->SetText(_T("正在登录，请稍等madie..."));
 	    strUser = pedituser->GetText();
 		strPsw = ppsw->GetText();
 		if (strUser.IsEmpty() || strPsw.IsEmpty())
 		{
-		    plable->SetText("NND,快输入账号、密码。");
+		    plable->SetText(_T("NND,快输入账号、密码。"));
 			pbton->SetEnabled(TRUE);
 			return -1;
 		}
@@ -79,7 +79,7 @@ int UILogin::login()
 		frame_wnd_->InitTcp();
 		if (FALSE == frame_wnd_->m_pTcpCommunication->Initialize("10.96.20.12", 6666, 1, 10000))
 		{
-              	plable->SetText("无法连接服务器,坑爹啊,快叫曹子伟开服务器。");
+              	plable->SetText(_T("无法连接服务器,坑爹啊,快叫曹子伟开服务器。"));
 
 				frame_wnd_->ReleaseTCP();
 				pbton->SetEnabled(TRUE);
@@ -90,11 +90,11 @@ int UILogin::login()
 		else
 		{
 		
-			char longinbuf[100]={0};
-			sprintf(longinbuf,"USER=%s PSW=%s",strUser.GetData(),strPsw.GetData());
+			TCHAR longinbuf[100]={0};
+			_stprintf(longinbuf,_T("USER=%s PSW=%s"),strUser.GetData(),strPsw.GetData());
 			int len = strlen(longinbuf);
 			//发送登录消息
-			plable->SetText("正在登录，请稍等。");
+			plable->SetText(_T("正在登录，请稍等。"));
 			frame_wnd_->m_pTcpCommunication->SendBuffer(CMD_LOGIN,longinbuf,len);
 
 
@@ -195,10 +195,10 @@ int UILogin::SetLogin(int status)
 	{
 		m_loginState=1;
 		//获取用户信息为2长度4个字节
-		frame_wnd_->m_pTcpCommunication->SendBuffer(CMD_GET_USER,"2",1);
+		frame_wnd_->m_pTcpCommunication->SendBuffer(CMD_GET_USER,_T("2"),1);
 		Sleep(500);
        //获取群信息
-		frame_wnd_->m_pTcpCommunication->SendBuffer(CMD_GET_GROUP,"2",1);
+		frame_wnd_->m_pTcpCommunication->SendBuffer(CMD_GET_GROUP,_T("2"),1);
         //获取好友信息
 		//登录成功
 		Close();
@@ -206,7 +206,7 @@ int UILogin::SetLogin(int status)
 	}
 	else
 	{
-       plable->SetText("登录失败，用户名或者密码错误");
+       plable->SetText(_T("登录失败，用户名或者密码错误"));
 	}
 	return 0;
 }

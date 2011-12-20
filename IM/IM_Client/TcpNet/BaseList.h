@@ -23,7 +23,7 @@ protected:
 typedef struct tag_ImMsg
 {
 	int iLen;	  // 发送串的长度
-	char* szSendBuf;  // 待发送的字符串
+	TCHAR* szSendBuf;  // 待发送的字符串
 	tag_ImMsg()
 	{
 		iLen = -1;

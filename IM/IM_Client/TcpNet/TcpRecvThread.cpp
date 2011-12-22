@@ -205,8 +205,8 @@ void CTcpRecvThread::RenewHandShake(TCHAR* pData, int iCount)
 			FriendListItemInfo friendinfo;
 			friendinfo.id = imno;
 			friendinfo.type = type;
-			_stprintf_s((TCHAR*)friendinfo.nick_name, 50 - 1, _T("%s"), (char*)byUser);
-			_stprintf_s((TCHAR*)friendinfo.description, 100 - 1, _T("%s"), (char*)bysign);
+			_stprintf_s((TCHAR*)friendinfo.nick_name, 50 - 1, _T("%s"), (TCHAR*)byUser);
+			_stprintf_s((TCHAR*)friendinfo.description, 100 - 1, _T("%s"), (TCHAR*)bysign);
 			//m_pTcpCommu->frame_wnd_->AddUIList(ADD_LIST_FRIEND,friendinfo);
 			 m_pTcpCommu->frame_wnd_->SendMessage(MSG_GETFRIEND,(WPARAM)&friendinfo,0);
 
@@ -214,6 +214,10 @@ void CTcpRecvThread::RenewHandShake(TCHAR* pData, int iCount)
 		break;
 	case CMD_SEND_MSG:
 		{
+			//取出类型
+			byte type;
+
+			recvBuff.GetByte(type);
 			//取出IM号码
 			int imno;
 			recvBuff.GetInt(imno);
@@ -225,9 +229,9 @@ void CTcpRecvThread::RenewHandShake(TCHAR* pData, int iCount)
 			recvBuff.GetBytes(byMsg, byLen);
 			//取出消息
 
-
 			MSGBODY  msgbody;
 			msgbody.imid = imno;
+			msgbody.type = type;
 			_stprintf(msgbody.msg,_T("%s"),(char*)byMsg);
 			//::SendMessage(m_wnd,MSG_HAVEDATA,(WPARAM)&msgbody,0);
 			if (strlen((char*)byMsg) !=0)
@@ -236,6 +240,32 @@ void CTcpRecvThread::RenewHandShake(TCHAR* pData, int iCount)
 			  m_pTcpCommu->frame_wnd_->SendMessage(MSG_HAVEDATA,(WPARAM)&msgbody,0);
 			}
 
+		}
+		break;
+	case CMD_SEND_GROUP_MSG:
+		{
+			//取出类型
+			int groupno;
+			recvBuff.GetInt(groupno);
+			//取出IM号码
+			int imno;
+			recvBuff.GetInt(imno);
+			//取出消息
+			BYTE byMsg[256];
+			memset(byMsg, 0, 256);
+			BYTE byLen = 0;
+			recvBuff.GetByte(byLen);
+			recvBuff.GetBytes(byMsg, byLen);
+			//取出消息
+
+			MSGBODY  msgbody;
+			msgbody.imid = imno;
+			msgbody.groupid = groupno;
+			_stprintf(msgbody.msg,_T("%s"),(char*)byMsg);
+			if (strlen((char*)byMsg) !=0)
+			{
+				m_pTcpCommu->frame_wnd_->SendMessage(MSG_HAVEDATA_GROUP,(WPARAM)&msgbody,0);
+			}
 		}
 		break;
 	case CMD_FRIEND_ONLINE:		// 还有上线
@@ -248,11 +278,66 @@ void CTcpRecvThread::RenewHandShake(TCHAR* pData, int iCount)
 		break;
 	case CMD_GET_GROUP:
 		{
-            //int  
+            int group_id;
+			recvBuff.GetInt(group_id);
+			//取出group_name
+			BYTE by_group_name[100];
+			memset(by_group_name, 0, 100);
+			BYTE byLen = 0;
+			recvBuff.GetByte(byLen);
+			recvBuff.GetBytes(by_group_name, byLen);
+
+			//取出group sign
+
+			BYTE by_group_sign[100];
+			memset(by_group_sign, 0, 100);
+			byLen = 0;
+			recvBuff.GetByte(byLen);
+			recvBuff.GetBytes(by_group_sign, byLen);
+
+
+			GroupsListItemInfo group;
+			group.id = group_id;
+			_stprintf_s((TCHAR*)group.nick_name,100-1,_T("%s"),(TCHAR*)by_group_name);
+			_stprintf_s((TCHAR*)group.description,100-1,_T("%s"),(TCHAR*)by_group_sign);
+
+            m_pTcpCommu->frame_wnd_->SendMessage(MSG_GET_GROUP,(WPARAM)&group,0);
+
 		}
 		break;
 	case CMD_GET_GROUP_USER:
 		{
+            //get group id
+			int group_id;
+			recvBuff.GetInt(group_id);
+			//get user id
+            int user_id;
+			recvBuff.GetInt(user_id);
+			//get user type
+			int user_type=-1;
+			recvBuff.GetInt(user_type);
+			//get name
+			BYTE by_user_name[100];
+			memset(by_user_name, 0, 100);
+			BYTE byLen = 0;
+			recvBuff.GetByte(byLen);
+			recvBuff.GetBytes(by_user_name, byLen);
+			//get sign
+
+			BYTE by_user_sign[100];
+			memset(by_user_sign, 0, 100);
+			byLen = 0;
+			recvBuff.GetByte(byLen);
+			recvBuff.GetBytes(by_user_sign, byLen);
+
+			GroupsListItemInfo groupinfo;
+			groupinfo.id = user_id;
+			groupinfo.type = user_type;
+			_stprintf_s((TCHAR*)groupinfo.nick_name, 50 - 1, _T("%s"), (TCHAR*)by_user_name);
+			_stprintf_s((TCHAR*)groupinfo.description, 100 - 1, _T("%s"), (TCHAR*)by_user_sign);
+			//m_pTcpCommu->frame_wnd_->AddUIList(ADD_LIST_FRIEND,friendinfo);
+			m_pTcpCommu->frame_wnd_->SendMessage(MSG_GET_GROUP_USER,(WPARAM)&groupinfo,(LPARAM)&group_id);
+
 
 		}
 		break;

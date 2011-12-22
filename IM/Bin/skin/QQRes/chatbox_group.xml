@@ -7,11 +7,11 @@
         <VerticalLayout name="VerticalLayoutUI1" bkimage="file=&apos;border.png&apos; corner=&apos;5,5,5,5&apos;" inset="1,0,1,0">
             <HorizontalLayout name="HorizontalLayoutUI1" height="45">
                 <VerticalLayout name="VerticalLayoutUI2" width="48" inset="0,1,0,0">
-                    <Button name="logo" width="44" height="44" bkimage="file=&apos;man.png&apos; corner=&apos;5,5,5,5&apos;" maxheight="44" maxwidth="44" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" />
+                    <Button name="logo" width="44" height="44" bkimage="file=&apos;groups.png&apos; corner=&apos;5,5,5,5&apos;" maxheight="44" maxwidth="44" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" />
                 </VerticalLayout>
                 <VerticalLayout name="VerticalLayoutUI3" inset="2,6,2,0">
-                    <Text name="nickname" text="tojen" width="200" height="16" textpadding="2,0,2,0" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" font="1" align="wrap" />
-                    <RichEdit />
+                    <Text name="nickname" width="200" height="16" textpadding="2,0,2,0" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" font="1" align="wrap" />
+				<RichEdit name="description"  multiline="false" width="200" inset="0,0,0,0" textcolor="#FFFFFFFF" height="18" enabled="true" rich="false"/>
                 </VerticalLayout>
                 <VerticalLayout name="VerticalLayoutUI4" width="94">
                     <Button name="minbtn" float="true" pos="0,0,0,0" width="28" height="19" maxheight="19" maxwidth="28" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file=&apos;btn_mini_normal.png&apos;" hotimage="btn_mini_highlight.png" pushedimage="btn_mini_down.png" />
@@ -36,7 +36,7 @@
                         <Button name="ButtonUI4" width="34" height="34" bkimage="file=&apos;icon_f.png&apos; dest=&apos;5,4,31,30&apos;" maxheight="34" maxwidth="34" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,8,2,2&apos;" pushedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
                     </HorizontalLayout>
                     <HorizontalLayout name="HorizontalLayoutUI3" bordersize="0" bkimage="file=&apos;chat_mid_bk.png&apos; source=&apos;0,10,2,26&apos;" bordercolor="#FF999933" inset="5,0,0,0">
-                        <RichEdit />
+          <RichEdit name="view_richedit" multiline="true" vscrollbar="true" autovscroll="true" rich="true" readonly="true" />
                     </HorizontalLayout>
                     <HorizontalLayout name="fontbar" height="30" bkimage="file=&apos;font_bk.bmp&apos;" inset="4,4,4,4">
                         <Combo normalimage="file=&apos;combo.png&apos; source=&apos;0,0,100,22&apos; corner=&apos;2,2,20,2&apos;" hotimage="file=&apos;combo.png&apos; source=&apos;0,22,100,44&apos; corner=&apos;2,2,22,2&apos;" pushedimage="file=&apos;combo.png&apos; source=&apos;0,44,100,66&apos; corner=&apos;2,2,22,2&apos;" dropboxsize="0,150" itemtextcolor="#FF000000" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" name="font_type" width="100" height="22">
@@ -83,7 +83,7 @@
                         <Button name="screenshotsbtn" width="24" height="20" bkimage="file=&apos;icon_screenshots.png&apos; dest=&apos;2,1,20,19&apos;" maxheight="20" maxwidth="24" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" pushedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
                     </HorizontalLayout>
                     <HorizontalLayout name="HorizontalLayoutUI5" height="80" bkcolor="#FFFFFFFF" inset="5,0,0,0">
-                        <RichEdit />
+          <RichEdit name="input_richedit" multiline="true" vscrollbar="true" autovscroll="true" enabled="true" rich="false" readonly="false" wantreturn="true" wantctrlreturn="false" />
                     </HorizontalLayout>
                     <HorizontalLayout name="HorizontalLayoutUI6" height="32">
                         <Control name="ControlUI11" />

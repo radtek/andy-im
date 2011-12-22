@@ -121,8 +121,8 @@ void CScheduler::MessageDispatch(BYTE* pbBuffer, int iLen)
 		GetGroupUserinfo(stMsg);
 		break;
 
-	case CMD_REQUEST_STUDENT_INFO: // 请求学生信息的命令
-		//RequestStudentInfo(stMsg);
+	case CMD_SEND_GROUP_MSG: // 
+		SendGroupMsg(stMsg);
 		break;
 
 	case CMD_REQUEST_STRATEGY: // 请求考勤策略的命令
@@ -430,9 +430,9 @@ void CScheduler::GetGroupinfo(const Message & stMsg)
 				 CSendBuff oSendBuf;
 				 oSendBuf.AddByte(CMD_REAL_HEAD);  // 帧头
 				 oSendBuf.AddInt(stMsg.iCmdID);      // 流水号
-				 oSendBuf.AddByte(CMD_GET_USER);  // 命令字
+				 oSendBuf.AddByte(CMD_GET_GROUP);  // 命令字
 				 oSendBuf.AddInt(totallen);               // 消息长
-				 oSendBuf.AddInt(vecgroup[i].id)
+				 oSendBuf.AddInt(vecgroup[i].id);
 				 oSendBuf.AddByte((BYTE)len_name); //用户名称长度
 				 oSendBuf.AddBytes((BYTE*)vecgroup[i].groupname.c_str(),len_name);//用户名
 				 oSendBuf.AddByte((BYTE)len_sign);//签名程度
@@ -464,14 +464,15 @@ void CScheduler::GetGroupUserinfo(const Message & stMsg)
 			{
 				int len_name=strlen(verUser[i].nick_name.c_str());
 				int len_sign=strlen(verUser[i].description.c_str());
-				int totallen = 4+2+len_name+len_sign+4;
+				int totallen = 4+2+len_name+len_sign+4+4;
 				CSendBuff oSendBuf;
 				oSendBuf.AddByte(CMD_REAL_HEAD);  // 帧头
 				oSendBuf.AddInt(stMsg.iCmdID);      // 流水号
-				oSendBuf.AddByte(CMD_GET_USER);  // 命令字
+				oSendBuf.AddByte(CMD_GET_GROUP_USER);  // 命令字
 				oSendBuf.AddInt(totallen);               // 消息长
-				oSendBuf.AddInt(verUser[i].id)
-				oSendBuf.AddInt(verUser[i].type)
+				oSendBuf.AddInt(groupno);
+				oSendBuf.AddInt(verUser[i].id);
+				oSendBuf.AddInt(verUser[i].type);
 				oSendBuf.AddByte((BYTE)len_name); //用户名称长度
 				oSendBuf.AddBytes((BYTE*)verUser[i].nick_name.c_str(),len_name);//用户名
 				oSendBuf.AddByte((BYTE)len_sign);//签名程度
@@ -490,6 +491,9 @@ void CScheduler::SendFriendMsg(const Message & stMsg)
 	int usrNo = stMsg.iClientID; //clientID为IM号码
 	CRecvBuff oContentBuf(stMsg.pbyCmdContent, stMsg.iCmdLen,TRUE);
 	//取出IM号码
+	byte type;
+	
+	oContentBuf.GetByte(type);
 	int imno;
 	oContentBuf.GetInt(imno);
 	//取出消息
@@ -499,12 +503,44 @@ void CScheduler::SendFriendMsg(const Message & stMsg)
 	oContentBuf.GetByte(byLen);
 	oContentBuf.GetBytes(msgbuff, byLen);
     int bufflen = int(byLen);
-	int totallen= bufflen+4+1;
+	int totallen= bufflen+4+1+1;
 	CSendBuff oSendBuf;
 	oSendBuf.AddByte(CMD_REAL_HEAD);  // 帧头
 	oSendBuf.AddInt(stMsg.iCmdID);      // 流水号
 	oSendBuf.AddByte(CMD_SEND_MSG);  // 命令字
 	oSendBuf.AddInt(totallen);               // 消息长
+	oSendBuf.AddByte(type);
+	oSendBuf.AddInt(usrNo);//带上clientid
+	oSendBuf.AddByte((BYTE)byLen); //用户名称长度
+	oSendBuf.AddBytes((BYTE*)msgbuff,byLen);//用户名
+	oSendBuf.AddByte(CMD_REAL_TAIL);  // 帧尾
+	g_pPendingSendQueue->AppendDataToBack(imno, stMsg.iCmdID,stMsg.byCmdCode, oSendBuf.GetBuffer(), oSendBuf.GetLength());
+}
+
+void CScheduler::SendGroupMsg(const Message & stMsg)
+{
+	int usrNo = stMsg.iClientID; //clientID为IM号码
+	CRecvBuff oContentBuf(stMsg.pbyCmdContent, stMsg.iCmdLen,TRUE);
+	//取出IM号码
+	int groupid;
+
+	oContentBuf.GetInt(groupid);
+	int imno;
+	oContentBuf.GetInt(imno);
+	//取出消息
+	BYTE msgbuff[250];
+	memset(msgbuff, 0, 250);
+	BYTE byLen = 0;
+	oContentBuf.GetByte(byLen);
+	oContentBuf.GetBytes(msgbuff, byLen);
+	int bufflen = int(byLen);
+	int totallen= bufflen+4+1+4;
+	CSendBuff oSendBuf;
+	oSendBuf.AddByte(CMD_REAL_HEAD);  // 帧头
+	oSendBuf.AddInt(stMsg.iCmdID);      // 流水号
+	oSendBuf.AddByte(CMD_SEND_GROUP_MSG);  // 命令字
+	oSendBuf.AddInt(totallen);               // 消息长
+	oSendBuf.AddInt(groupid);
 	oSendBuf.AddInt(usrNo);//带上clientid
 	oSendBuf.AddByte((BYTE)byLen); //用户名称长度
 	oSendBuf.AddBytes((BYTE*)msgbuff,byLen);//用户名

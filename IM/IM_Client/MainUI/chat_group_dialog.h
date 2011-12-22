@@ -10,7 +10,7 @@ class ChatGroupDialog : public WindowImplBase, public SkinChangedReceiver
 {
 public:
 
-	ChatGroupDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkcolor, const FriendListItemInfo& group_info);
+	ChatGroupDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkcolor,const GroupsListItemInfo& group_info);
 	~ChatGroupDialog();
 
 public:
@@ -43,7 +43,7 @@ public:
 
 	void SetTextColor(DWORD dwColor);
 
-	void SendMsg(CStdString name,CStdString sText);
+	int SendMsg(CStdString name,CStdString sText);
 
 	tString GetCurrentTimeString();
 
@@ -69,17 +69,21 @@ private:
 
 	tString bgimage_;
 	DWORD bkcolor_;
-	FriendListItemInfo group_info_;
+	GroupsListItemInfo group_info_;
+	//FriendListItemInfo myselft_info_;
 
 	std::vector<GroupsListItemInfo> m_vec_group;
 
 	MainFrame* frame_wnd_;
 
-
+public:
 	//按照状态重新构造整个list
 	void UpdateGroupList();
 	//添加一个group item
 	void AddGroupItem(const GroupsListItemInfo listitem);
+
+	int  FindUser(int immo,CStdString &name);
+
 };
 
 

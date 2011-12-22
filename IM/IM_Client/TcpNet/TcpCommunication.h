@@ -32,7 +32,9 @@ public:
 	int					Recv(TCHAR* szMsg, int nLen);
 	int					SendClietReg();
 	void                SendBuffer(int type,TCHAR *buff,int len);//发包
-	void                SendMsg(unsigned int imid,TCHAR *buff,int len);//发送消息
+	void                SendMsg(byte type,unsigned int imid,TCHAR *buff,int bufflen);// byte 消息类型 ，发送消息
+	void                SendGroupMsg(unsigned int groupid ,unsigned int imid,TCHAR *buff,int bufflen);
+	void                SendGetGroupUserMsg(unsigned int groupid);//发送获取群用户信息
 private:
 	//CWriteFileThread	*m_pWriteFileThread;
 	DWORD				m_dwServerPort;

@@ -226,6 +226,7 @@ Node* CGroupsUI::AddNode(const GroupsListItemInfo& item, Node* parent)
 	node->data().child_visible_ = (node->data().level_ == 0);
 
 	node->data().text_ = item.nick_name;
+	node->data().value = item.id;
 	node->data().list_elment_ = pListElement;
 
 	if (!parent->data().child_visible_)

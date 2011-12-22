@@ -121,6 +121,30 @@ BOOL CTcpCommunication::StopService()
 	CloseSocket();
 	return TRUE;
 }
+void CTcpCommunication::SendGetGroupUserMsg(unsigned int groupid)
+{
+	SYSTEMTIME ct;
+	GetLocalTime( &ct);
+	struct tm gm = { ct.wSecond, ct.wMinute, ct.wHour, ct.wDay, ct.wMonth-1, ct.wYear-1900, ct.wDayOfWeek, 0, 0 };
+	time_t packettime = mktime(&gm);
+	int iPacketTime = (int)packettime;
+	CSendBuff *oSndBuff = NULL;
+	oSndBuff = new CSendBuff;
+	//添加一个时间戳，用于判断是否过时效
+	oSndBuff->AddInt(iPacketTime);
+	oSndBuff->AddByte(CMD_REAL_HEAD);
+	oSndBuff->AddInt(g_ClientID);
+	oSndBuff->AddInt(0);//流水号
+	oSndBuff->AddByte(CMD_GET_GROUP_USER);//
+	oSndBuff->AddInt(4); //消息长度
+	oSndBuff->AddInt(groupid);
+	oSndBuff->AddByte(CMD_REAL_TAIL);
+
+	IMMsg *pmsg = new IMMsg;
+	pmsg->iLen = oSndBuff->GetLength();
+	pmsg->szSendBuf = (TCHAR*)oSndBuff->GetBuffer();
+	m_pTcpSendThread->m_pSynsendList->AddTail(pmsg);
+}
 //type 意义
 //1   登录消息。发送用户名和密码
 //2   获取用户信息
@@ -153,7 +177,7 @@ void CTcpCommunication::SendBuffer(int type ,TCHAR *buff,int len)
 }
 //imid 对方 im号码
 //buff 消息内容
-void CTcpCommunication::SendMsg(unsigned int imid,TCHAR *buff,int bufflen)
+void CTcpCommunication::SendMsg(byte type,unsigned int imid,TCHAR *buff,int bufflen)
 {
 	SYSTEMTIME ct;
 	GetLocalTime( &ct);
@@ -165,7 +189,7 @@ void CTcpCommunication::SendMsg(unsigned int imid,TCHAR *buff,int bufflen)
 
    // int bufflen = strlen(buff);
 
-	int totallen = bufflen +4+1;
+	int totallen = bufflen +4+1+1;
 
 	//添加一个时间戳，用于判断是否过时效
 	oSndBuff->AddInt(iPacketTime);
@@ -174,6 +198,38 @@ void CTcpCommunication::SendMsg(unsigned int imid,TCHAR *buff,int bufflen)
 	oSndBuff->AddInt(0);//流水号
 	oSndBuff->AddByte(CMD_SEND_MSG);//
 	oSndBuff->AddInt(totallen); //消息长度
+	oSndBuff->AddByte(type);
+	oSndBuff->AddInt(imid);//对方imid
+	oSndBuff->AddByte((BYTE)bufflen);
+	oSndBuff->AddBytes((BYTE*)buff,bufflen);
+	oSndBuff->AddByte(CMD_REAL_TAIL);
+	IMMsg *pmsg = new IMMsg;
+	pmsg->iLen = oSndBuff->GetLength();
+	pmsg->szSendBuf = (TCHAR*)oSndBuff->GetBuffer();
+	m_pTcpSendThread->m_pSynsendList->AddTail(pmsg);
+}
+void CTcpCommunication::SendGroupMsg(unsigned int groupid ,unsigned int imid,TCHAR *buff,int bufflen)
+{
+	SYSTEMTIME ct;
+	GetLocalTime( &ct);
+	struct tm gm = { ct.wSecond, ct.wMinute, ct.wHour, ct.wDay, ct.wMonth-1, ct.wYear-1900, ct.wDayOfWeek, 0, 0 };
+	time_t packettime = mktime(&gm);
+	int iPacketTime = (int)packettime;
+	CSendBuff *oSndBuff = NULL;
+	oSndBuff = new CSendBuff;
+
+	// int bufflen = strlen(buff);
+
+	int totallen = bufflen +4+1+4;
+
+	//添加一个时间戳，用于判断是否过时效
+	oSndBuff->AddInt(iPacketTime);
+	oSndBuff->AddByte(CMD_REAL_HEAD);
+	oSndBuff->AddInt(g_ClientID);//自己的IM号码
+	oSndBuff->AddInt(0);//流水号
+	oSndBuff->AddByte(CMD_SEND_GROUP_MSG);//
+	oSndBuff->AddInt(totallen); //消息长度
+	oSndBuff->AddInt(groupid);
 	oSndBuff->AddInt(imid);//对方imid
 	oSndBuff->AddByte((BYTE)bufflen);
 	oSndBuff->AddBytes((BYTE*)buff,bufflen);

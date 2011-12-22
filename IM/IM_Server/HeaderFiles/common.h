@@ -743,6 +743,7 @@ const int eSMGP_NEED_INIT		 =6;				//	接口尚未初始化
 #define     CMD_GET_GROUP             6//获取群信息
 #define     CMD_TIME_CHECK              7  // 时间校验
 #define     CMD_GET_GROUP_USER        8//获取群用户信息
+#define     CMD_SEND_GROUP_MSG         9//发送群消息
 
 //#define     CMD_UPDATE_COMPLETE         6  // 更新完毕
 

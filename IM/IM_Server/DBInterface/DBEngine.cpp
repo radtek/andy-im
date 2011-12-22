@@ -399,8 +399,9 @@ int DBEngine::GetGroupUserInfo(vector<USER_INFO> &verfriend,int groupno)
 	{
 		return -1;
 	}
+	//SELECT a.imno, a.name, b.online FROM groupinfo a INNER JOIN userinfo b ON a.groupno=888888 and a.name=b.name
 	char szSQL[SQL_BUFFER_LEN] = {0};
-	sprintf(szSQL, "select imno,name from groupinfo where groupno=%d",
+	sprintf(szSQL, "SELECT a.imno, a.name, b.online FROM groupinfo a INNER JOIN userinfo b ON a.groupno=%d and a.name=b.name",
 		groupno);
 	cmd->ActiveConnection = _connection_ptr;
 	cmd->CommandText = _bstr_t(szSQL);
@@ -417,13 +418,16 @@ int DBEngine::GetGroupUserInfo(vector<USER_INFO> &verfriend,int groupno)
 		{     
 			_variant_t		_v_imno;
 			_variant_t		_v_username;
+			_variant_t      _v_online;
 
 			_v_imno = rs->GetCollect("imno");
 			_v_username = rs->GetCollect("name");
+			_v_online = rs->GetCollect("online");
 
 			USER_INFO user;
 			user.id = (int)(long)_v_imno;
 			VarientToString(_v_username, user.nick_name);
+			user.type =(int)(long)_v_online;
 
 
 			verfriend.push_back(user);

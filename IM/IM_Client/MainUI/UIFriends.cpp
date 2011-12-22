@@ -249,8 +249,6 @@ Node* CFriendsUI::AddNode(const FriendListItemInfo& item,Node* parent)
 			    //"file='tree_top.png' corner='2,1,2,1' fade='100'"
 			_stprintf_s(szBuf, MAX_PATH - 1, _T("%s"), item.logo);
 
-
-
 			//LPCTSTR dir =getcurrent
 			//_stprintf_s(szBuf, MAX_PATH - 1, "file='..\\face\\user_on.bmp' mask='#0000FF'", item.logo);
 			log_button->SetNormalImage(szBuf);

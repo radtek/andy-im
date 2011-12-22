@@ -116,6 +116,8 @@ private:
 	void GetGroupinfo(const Message & stMsg);
 	//获取群成员信息
 	void GetGroupUserinfo(const Message & stMsg);
+    //发送群消息
+	void SendGroupMsg(const Message & stMsg);
 };
 
 #endif

@@ -10,7 +10,7 @@ class ChatDialog : public WindowImplBase, public SkinChangedReceiver
 {
 public:
 
-	ChatDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkcolor, const FriendListItemInfo& myselft_info, const FriendListItemInfo& friend_info);
+	ChatDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkcolor,const FriendListItemInfo& friend_info);
 	~ChatDialog();
 
 public:
@@ -43,7 +43,7 @@ public:
 
 	void SetTextColor(DWORD dwColor);
 
-    void SendMsg(CStdString name,CStdString sText);
+    int SendMsg(CStdString name,CStdString sText);
 
 	tString GetCurrentTimeString();
 
@@ -69,7 +69,7 @@ private:
 
 	tString bgimage_;
 	DWORD bkcolor_;
-	FriendListItemInfo myselft_;
+	//FriendListItemInfo myselft_;
 	FriendListItemInfo friend_;
 
 	MainFrame* frame_wnd_;

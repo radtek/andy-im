@@ -51,7 +51,8 @@ typedef struct _S_SHAKE_DATA
 #define		FRAME_HEAD				0x02		//帧头标示符  
 #define		FRAME_END				0x03		//帧尾标示符 
 
-
+#define     MSG_TYPE_FRIEND         1
+#define     MSG_TYPE_GROUP          2
 
 #define		CMD_REAL_HEAD  0x02
 #define		CMD_REAL_TAIL  0x03
@@ -86,23 +87,33 @@ typedef struct _S_SHAKE_DATA
 #define     CMD_GET_GROUP             6//获取群信息
 #define     CMD_TIME_CHECK              7  // 时间校验
 #define     CMD_GET_GROUP_USER        8//获取群用户信息
+#define     CMD_SEND_GROUP_MSG         9//发送群消息
 
 
 
 
 
-#define MSG_HAVEDATA WM_USER+1000
-#define MSG_GETFRIEND WM_USER+1001
+#define MSG_HAVEDATA			WM_USER+1000
+#define MSG_GETFRIEND			WM_USER+1001
+#define MSG_GET_GROUP			WM_USER+1002
+#define MSG_GET_GROUP_USER		WM_USER+1003
+#define MSG_HAVEDATA_GROUP      WM_USER+1004
 
 typedef struct tag_MSGBODY 
 {
 	unsigned int imid;
+	unsigned int groupid;
     TCHAR msg[256];
+	byte type;
 	tag_MSGBODY()
 	{
 		imid = -1;
 
+		groupid = -1;
+
 		memset(msg,0,256);
+
+		type = -1;
 	}
 
 }MSGBODY;

@@ -201,7 +201,7 @@ int UILogin::SetLogin(int status)
 		frame_wnd_->m_pTcpCommunication->SendBuffer(CMD_GET_GROUP,_T("2"),1);
         //获取好友信息
 		//登录成功
-		Close();
+		ShowWindow(SW_HIDE);
 
 	}
 	else

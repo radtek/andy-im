@@ -45,7 +45,10 @@ const TCHAR* const kGroupsListControlName = _T("groups");
 const int kEmotionRefreshTimerId = 1001;
 const int kEmotionRefreshInterval = 150;
 
-ChatGroupDialog::ChatGroupDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkcolor,const FriendListItemInfo& group_info)
+
+extern FriendListItemInfo g_myself_info;
+
+ChatGroupDialog::ChatGroupDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkcolor,const GroupsListItemInfo& group_info)
 : frame_wnd_(frame_wnd)
 , bgimage_(bgimage)
 , bkcolor_(bkcolor)
@@ -57,7 +60,9 @@ ChatGroupDialog::ChatGroupDialog(MainFrame * frame_wnd, const tString& bgimage, 
 , underline_(false)
 , font_size_(12)
 , font_face_name_(_T("微软雅黑"))
-{}
+{
+
+}
 
 ChatGroupDialog::~ChatGroupDialog()
 {
@@ -297,11 +302,15 @@ tString ChatGroupDialog::GetCurrentTimeString()
 	return szTime;
 }
 //name 显示的名字，sText内容
-void ChatGroupDialog::SendMsg(CStdString name,CStdString sText)
+int ChatGroupDialog::SendMsg(CStdString name,CStdString sText)
 {
 
 	CRichEditUI* pRichEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kViewRichEditControlName));
-	if( pRichEdit == NULL ) return;
+	if( pRichEdit == NULL ) 
+	{
+		DbgPrint("can not find kViewRichEditControlName\n");
+		return -1;
+	}
 	long lSelBegin = 0, lSelEnd = 0;
 	CHARFORMAT2 cf;
 	ZeroMemory(&cf, sizeof(CHARFORMAT2));
@@ -362,6 +371,8 @@ void ChatGroupDialog::SendMsg(CStdString name,CStdString sText)
 	pRichEdit->SetParaFormat(pf);
 
 	pRichEdit->EndDown();
+
+	return 0;
 }
 
 void ChatGroupDialog::Notify(TNotifyUI& msg)
@@ -414,6 +425,7 @@ void ChatGroupDialog::Notify(TNotifyUI& msg)
 		}
 		else if (_tcsicmp(msg.pSender->GetName(), kSendButtonControlName) == 0)
 		{
+			/*
 			CRichEditUI* pRichEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kInputRichEditControlName));
 			if( pRichEdit == NULL ) return;
 			pRichEdit->SetFocus();
@@ -424,6 +436,58 @@ void ChatGroupDialog::Notify(TNotifyUI& msg)
 			SendMsg(group_info_.nick_name,sText);
 			//int imNum = friend_.id;
 			//frame_wnd_->m_pTcpCommunication->SendMsg(imNum,(char*)sText.GetData());
+			*/
+
+			CRichEditUI* pRichEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kInputRichEditControlName));
+			CRichEditUI* pViewEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kViewRichEditControlName));
+			if( pRichEdit == NULL ) return;
+			pRichEdit->SetFocus();
+			CStdString sText = pRichEdit->GetTextRange(0, pRichEdit->GetTextLength());
+			if( sText.IsEmpty() ) 
+				return;
+
+			int textlen = sText.GetLength();
+
+			if (textlen > 512)
+			{  
+				pViewEdit->SetTextColor(RGB(255,0,0));
+				pViewEdit->SetText(_T("错误！发送数据的长度不能超过512字节。")); 
+			}
+			else
+			{
+				//int imNum = friend_.id;
+				TCHAR sendmesg[513] = {0};
+
+
+				_stprintf_s(sendmesg,512,_T("%s"),sText.GetData());
+				int len = strlen(sendmesg);
+
+				if (len !=textlen)
+				{
+					pViewEdit->SetTextColor(RGB(255,0,0));
+					pViewEdit->SetText(_T("警告！发送数据的长度和计算的不同。")); 
+				}
+				//显示在
+				SendMsg(g_myself_info.nick_name,sText);
+				pRichEdit->SetText(_T(""));
+
+				int size =0;
+				size = m_vec_group.size();
+
+				if (size > 0)
+				{
+					for (int i = 0; i < size; i++)
+					{
+						if (g_myself_info.id != m_vec_group[i].id)
+						{
+							int imNum = m_vec_group[i].id;
+							frame_wnd_->m_pTcpCommunication->SendGroupMsg(group_info_.id,imNum,sendmesg,textlen);
+							Sleep(100);
+						}
+					}
+				}
+
+			}
 
 		}
 	}
@@ -431,15 +495,68 @@ void ChatGroupDialog::Notify(TNotifyUI& msg)
 	{
 		if (_tcsicmp(msg.pSender->GetName(), kInputRichEditControlName) == 0)
 		{
+			//CRichEditUI* pRichEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kInputRichEditControlName));
+			//if( pRichEdit == NULL ) return;
+			//pRichEdit->SetFocus();
+			//CStdString sText = pRichEdit->GetTextRange(0, pRichEdit->GetTextLength());
+			//if( sText.IsEmpty() ) return;
+			//pRichEdit->SetText(_T(""));
+			//SendMsg(group_info_.nick_name,sText);
+			//int imNum = friend_.id;
+			//frame_wnd_->m_pTcpCommunication->SendMsg(imNum,(char*)sText.GetData());
+
 			CRichEditUI* pRichEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kInputRichEditControlName));
+			CRichEditUI* pViewEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kViewRichEditControlName));
 			if( pRichEdit == NULL ) return;
 			pRichEdit->SetFocus();
 			CStdString sText = pRichEdit->GetTextRange(0, pRichEdit->GetTextLength());
-			if( sText.IsEmpty() ) return;
-			pRichEdit->SetText(_T(""));
-			SendMsg(group_info_.nick_name,sText);
-			//int imNum = friend_.id;
-			//frame_wnd_->m_pTcpCommunication->SendMsg(imNum,(char*)sText.GetData());
+			if( sText.IsEmpty() ) 
+				return;
+
+			int textlen = sText.GetLength();
+
+			if (textlen > 512)
+			{  
+				pViewEdit->SetTextColor(RGB(255,0,0));
+				pViewEdit->SetText(_T("错误！发送数据的长度不能超过512字节。")); 
+			}
+			else
+			{
+				//int imNum = friend_.id;
+				TCHAR sendmesg[513] = {0};
+
+
+				_stprintf_s(sendmesg,512,_T("%s"),sText.GetData());
+				int len = strlen(sendmesg);
+
+				if (len !=textlen)
+				{
+					pViewEdit->SetTextColor(RGB(255,0,0));
+					pViewEdit->SetText(_T("警告！发送数据的长度和计算的不同。")); 
+				}
+				//显示在
+				SendMsg(g_myself_info.nick_name,sText);
+				pRichEdit->SetText(_T(""));
+
+				int size =0;
+				size = m_vec_group.size();
+
+				if (size > 0)
+				{
+					for (int i = 0; i < size; i++)
+					{
+				
+						if (g_myself_info.id != m_vec_group[i].id)
+						{
+							int imNum = m_vec_group[i].id;
+							frame_wnd_->m_pTcpCommunication->SendGroupMsg(group_info_.id,imNum,sendmesg,textlen);
+							Sleep(100);
+						}
+						
+					}
+				}
+
+			}
 		}
 	}
 	else if (_tcsicmp(msg.sType, _T("timer")) == 0)
@@ -537,3 +654,20 @@ LRESULT ChatGroupDialog::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 
 void ChatGroupDialog::FontStyleChanged()
 {}
+
+int ChatGroupDialog::FindUser(int immo,CStdString &name)
+{
+	int size = m_vec_group.size();
+	if (size > 0)
+	{
+		for (int i = 0; i <size;i++)
+		{
+			if (immo == m_vec_group[i].id)
+			{
+				name.Format(_T("%s"),m_vec_group[i].nick_name);
+				return 0;
+			}
+		}
+	}
+	return -1;
+}

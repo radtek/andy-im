@@ -43,11 +43,12 @@ const TCHAR* const kSendButtonControlName = _T("sendbtn");
 const int kEmotionRefreshTimerId = 1001;
 const int kEmotionRefreshInterval = 150;
 
-ChatDialog::ChatDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkcolor, const FriendListItemInfo& myselft_info, const FriendListItemInfo& friend_info)
+
+extern FriendListItemInfo g_myself_info;
+ChatDialog::ChatDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkcolor,const FriendListItemInfo& friend_info)
 : frame_wnd_(frame_wnd)
 , bgimage_(bgimage)
 , bkcolor_(bkcolor)
-, myselft_(myselft_info)
 , friend_(friend_info)
 , emotion_timer_start_(false)
 , text_color_(0xFF000000)
@@ -252,11 +253,15 @@ tString ChatDialog::GetCurrentTimeString()
 	return szTime;
 }
 //name 显示的名字，sText内容
-void ChatDialog::SendMsg(CStdString name,CStdString sText)
+int ChatDialog::SendMsg(CStdString name,CStdString sText)
 {
   
     CRichEditUI* pRichEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kViewRichEditControlName));
-    if( pRichEdit == NULL ) return;
+    if( pRichEdit == NULL ) 
+	{
+		DbgPrint("can not find kViewRichEditControlName\n");
+		return -1;
+	}
     long lSelBegin = 0, lSelEnd = 0;
     CHARFORMAT2 cf;
     ZeroMemory(&cf, sizeof(CHARFORMAT2));
@@ -317,6 +322,8 @@ void ChatDialog::SendMsg(CStdString name,CStdString sText)
     pRichEdit->SetParaFormat(pf);
 
     pRichEdit->EndDown();
+
+	return 0;
 }
 
 void ChatDialog::Notify(TNotifyUI& msg)
@@ -397,7 +404,7 @@ void ChatDialog::Notify(TNotifyUI& msg)
 
 			if (textlen > 512)
 			{  
-				pViewEdit->SetTextColor(RGB(255,0,0,));
+				pViewEdit->SetTextColor(RGB(255,0,0));
 				pViewEdit->SetText(_T("错误！发送数据的长度不能超过512字节。")); 
 			}
 			else
@@ -411,12 +418,12 @@ void ChatDialog::Notify(TNotifyUI& msg)
 
 				if (len !=textlen)
 				{
-					pViewEdit->SetTextColor(RGB(255,0,0,));
+					pViewEdit->SetTextColor(RGB(255,0,0));
 					pViewEdit->SetText(_T("警告！发送数据的长度和计算的不同。")); 
 				}
-				frame_wnd_->m_pTcpCommunication->SendMsg(imNum,sendmesg,textlen);
+				frame_wnd_->m_pTcpCommunication->SendMsg(MSG_TYPE_FRIEND,imNum,sendmesg,textlen);
 				//显示在
-				SendMsg(myselft_.nick_name,sText);
+				SendMsg(g_myself_info.nick_name,sText);
 				pRichEdit->SetText(_T(""));
 			}
 
@@ -438,7 +445,7 @@ void ChatDialog::Notify(TNotifyUI& msg)
 
 			if (textlen > 512)
 			{  
-				pViewEdit->SetTextColor(RGB(255,0,0,));
+				pViewEdit->SetTextColor(RGB(255,0,0));
 				pViewEdit->SetText(_T("错误！发送数据的长度不能超过512字节。")); 
 			}
 			else
@@ -452,12 +459,12 @@ void ChatDialog::Notify(TNotifyUI& msg)
 
 				if (len !=textlen)
 				{
-					pViewEdit->SetTextColor(RGB(255,0,0,));
+					pViewEdit->SetTextColor(RGB(255,0,0));
 					pViewEdit->SetText(_T("警告！发送数据的长度和计算的不同。")); 
 				}
-				frame_wnd_->m_pTcpCommunication->SendMsg(imNum,sendmesg,textlen);
+				frame_wnd_->m_pTcpCommunication->SendMsg(MSG_TYPE_FRIEND,imNum,sendmesg,textlen);
 				//显示在
-				SendMsg(myselft_.nick_name,sText);
+				SendMsg(g_myself_info.nick_name,sText);
 				pRichEdit->SetText(_T(""));
 			}
         }

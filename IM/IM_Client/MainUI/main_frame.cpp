@@ -57,6 +57,8 @@ int g_ClientID;
 
 CServerLog*		g_pSvrLog;
 
+FriendListItemInfo g_myself_info;
+
 //全局对象
 MainFrame::MainFrame()
 : bk_image_index_(0)
@@ -67,6 +69,7 @@ MainFrame::MainFrame()
 	root_parent_company= NULL;
 	root_parent_stranger=NULL;
 	root_parent_blacklist= NULL;
+	root_parent_group = NULL;
 
     m_mChatDlg.clear();
 	vec_friends.clear();
@@ -208,11 +211,22 @@ void MainFrame::Init()
 
 
 }
-void MainFrame::InitTcp()
+int MainFrame::InitTcp()
 {
 	// 创建日志
 	g_pSvrLog = new CServerLog(); 
+	if (g_pSvrLog== NULL)
+	{
+		DbgPrint("new ServerLog error!\n");
+		return -1;
+	}
 	m_pTcpCommunication = new CTcpCommunication(this);
+	if (m_pTcpCommunication == NULL)
+	{
+		DbgPrint("new tcp thread error!\n");
+		return -1;
+	}
+	return 0;
 }
 void MainFrame::ReleaseTCP()
 {
@@ -233,7 +247,7 @@ DWORD MainFrame::GetBkColor()
 	if (background != NULL)
 		return background->GetBkColor();
 
-	return 0;
+	return -1;
 }
 
 void MainFrame::SetBkColor(DWORD dwBackColor)
@@ -251,7 +265,7 @@ void MainFrame::SetBkColor(DWORD dwBackColor)
 		skin_changed_observer_.Broadcast(param);
 	}
 }
-void MainFrame::AddUIList(int parent,const FriendListItemInfo list)
+int MainFrame::AddUIList(int parent,const FriendListItemInfo list)
 {
 
 	CFriendsUI* pFriendsList = static_cast<CFriendsUI*>(paint_manager_.FindControl(kFriendsListControlName));
@@ -281,6 +295,11 @@ void MainFrame::AddUIList(int parent,const FriendListItemInfo list)
 			     vec_friends.push_back(list);
 
 			}
+			else
+			{
+				DbgPrint("add list friend error!\n");
+				return -1;
+			}
 
 		}
 		break;
@@ -293,6 +312,11 @@ void MainFrame::AddUIList(int parent,const FriendListItemInfo list)
 					vec_friends.push_back(list);
 
 			}
+			else
+			{
+				DbgPrint("add list company error!\n");
+				return -1;
+			}
 		}
 		break;
 	case ADD_LIST_STRANGER:
@@ -302,6 +326,11 @@ void MainFrame::AddUIList(int parent,const FriendListItemInfo list)
 			
 					vec_friends.push_back(list);
 
+			}
+			else
+			{
+				DbgPrint("add list stranger error!\n");
+				return -1;
 			}
 		}
 		break;
@@ -313,14 +342,21 @@ void MainFrame::AddUIList(int parent,const FriendListItemInfo list)
 					vec_friends.push_back(list);
 
 			}
+			else
+			{
+				DbgPrint("add list blacklist error!\n");
+				return -1;
+			}
 		}
 		break;
 	default:
 		break;
 	}
 	UpdateFriendList();
+
+	return 0;
 }
-void MainFrame::UpdateFriendList()
+int MainFrame::UpdateFriendList()
 {
 	CFriendsUI* pFriendsList = static_cast<CFriendsUI*>(paint_manager_.FindControl(kFriendsListControlName));
 	if (pFriendsList != NULL)
@@ -350,9 +386,14 @@ void MainFrame::UpdateFriendList()
 		}
 		LeaveCriticalSection(&m_sectionlist);
 	}
+	else
+	{
+		return -1;
+	}
+	return 0;
 
 }
-void MainFrame::UpdateFriend(unsigned int imid)
+int MainFrame::UpdateFriend(unsigned int imid)
 {
 	int size = vec_friends.size();
 	if(size > 0)
@@ -369,9 +410,10 @@ void MainFrame::UpdateFriend(unsigned int imid)
 	}
 	LeaveCriticalSection(&m_sectionlist);
 	UpdateFriendList();
+	return 0;
 
 }
-void MainFrame::CreateFriendsList()
+int MainFrame::CreateFriendsList()
 {
 	CFriendsUI* pFriendsList = static_cast<CFriendsUI*>(paint_manager_.FindControl(kFriendsListControlName));
 	if (pFriendsList != NULL)
@@ -446,8 +488,30 @@ void MainFrame::CreateFriendsList()
 
 
 	}
+	else
+	{
+		return -1;
+	}
+	return 0;
 }
-void MainFrame::CreateGroupsList()
+int MainFrame::AddGroupList(GroupsListItemInfo group)
+{
+	CGroupsUI* pGroupsList = static_cast<CGroupsUI*>(paint_manager_.FindControl(kGroupsListControlName));
+	if (pGroupsList != NULL && root_parent_group !=NULL)
+	{
+		group.folder = false;
+		group.empty =false;
+	    _stprintf(group.logo,_T("%s"),_T("groups.png"));
+	    pGroupsList->AddNode(group, root_parent_group);
+		vec_group.push_back(group);
+	}
+	else
+	{
+		return -1;
+	}
+	return 0;
+}
+int MainFrame::CreateGroupsList()
 {
 	CGroupsUI* pGroupsList = static_cast<CGroupsUI*>(paint_manager_.FindControl(kGroupsListControlName));
 	if (pGroupsList != NULL)
@@ -460,36 +524,48 @@ void MainFrame::CreateGroupsList()
 		item.folder = true;
 		item.empty = false;
 		//item.nick_name = _T("我的QQ群");
-		sprintf(item.nick_name,"%s",_T("我的QQ群"));
+		_stprintf(item.nick_name,_T("%s"),_T("我的QQ群"));
 
-		Node* root_parent = pGroupsList->AddNode(item, NULL);
+		root_parent_group = pGroupsList->AddNode(item, NULL);
 
 		item.folder = false;
 		item.id = 11535348;
 		//item.logo = _T("groups.png");
-		sprintf(item.logo,"%s",_T("groups.png"));
+		_stprintf(item.logo,_T("%s"),_T("groups.png"));
 		//item.nick_name = _T("官方交流群");
-		sprintf(item.nick_name,"%s",_T("官方交流群"));
+		_stprintf(item.nick_name,_T("%s"),_T("官方交流群"));
 		//item.description = _T("153787916");
-		sprintf(item.description,"%s",_T("153787916"));
-		pGroupsList->AddNode(item, root_parent);
+		_stprintf(item.description,_T("%s"),_T("153787916"));
+		pGroupsList->AddNode(item, root_parent_group);
 
 		item.folder = false;
 		//item.logo = _T("groups.png");
 		//item.nick_name = _T("官方交流群2");
 		//item.description = _T("79145400");
-		sprintf(item.logo,"%s",_T("groups.png"));
-		sprintf(item.nick_name,"%s",_T("官方交流群2"));
-		sprintf(item.description,"%s",_T("79145400"));
-		pGroupsList->AddNode(item, root_parent);
+		_stprintf(item.logo,_T("%s"),_T("groups.png"));
+		_stprintf(item.nick_name,_T("%s"),_T("官方交流群2"));
+		_stprintf(item.description,_T("%s"),_T("79145400"));
+		pGroupsList->AddNode(item, root_parent_group);
+
+		return 0;
+	}
+	else
+	{
+		return -1;
 	}
 }
 
-void MainFrame::CreateMicroBlogList()
+int MainFrame::CreateMicroBlogList()
 {
 	CMicroBlogUI* pMicroBlogList = static_cast<CMicroBlogUI*>(paint_manager_.FindControl(kMicroBlogListControlName));
 	if (pMicroBlogList != NULL)
-	{}
+	{
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
 }
 
 void MainFrame::OnPrepare(TNotifyUI& msg)
@@ -728,11 +804,12 @@ void MainFrame::Notify(TNotifyUI& msg)
 								if (citer->id==node->data().value)
 								{
 									m_friend_info = *citer;
-									break;
+									SHowChatDlg(m_friend_info.id,_T(""));
+									return;
 								}
 							}
-							SHowChatDlg(m_friend_info.id,_T(""));
-
+							DbgPrint("can not find friend in friend list\n");
+					
 						}
 					}
 				}
@@ -751,8 +828,18 @@ void MainFrame::Notify(TNotifyUI& msg)
 						if (!pGrpupList->CanExpand(node) && (background != NULL))
 						{
 
-				
-							CControlUI* background = paint_manager_.FindControl(kBackgroundControlName);
+							for (std::vector<GroupsListItemInfo>::const_iterator citer = vec_group.begin(); citer != vec_group.end(); ++citer)
+							{
+								if (citer->id==node->data().value)
+								{
+									m_group_info = *citer;
+									ShowGroupDlg(m_group_info.id,-1,_T(""));
+									break;
+								}
+							}
+							DbgPrint("can not find group in group list\n");
+			
+							/*CControlUI* background = paint_manager_.FindControl(kBackgroundControlName);
 							if ((background != NULL))
 							{
 								if (_tcslen(background->GetBkImage()) > 0)
@@ -770,7 +857,7 @@ void MainFrame::Notify(TNotifyUI& msg)
 							skin_changed_observer_.AddReceiver(pChatDialog);
 
 							pChatDialog->CenterWindow();
-							pChatDialog->ShowWindow(SW_SHOW);
+							pChatDialog->ShowWindow(SW_SHOW);*/
 
 						}
 					}
@@ -825,12 +912,15 @@ LRESULT MainFrame::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 	if (uMsg == MSG_HAVEDATA)
 	{
 
-		int a= 1;
-
 		MSGBODY *body = (MSGBODY*)wParam;
-		CStdString strMsg,strUser,strfriendName;
-
-		SHowChatDlg(body->imid,(TCHAR*)body->msg);
+		
+		SHowChatDlg(body->imid,(TCHAR*)body->msg);	
+	
+	}
+	else if (uMsg == MSG_HAVEDATA_GROUP)
+	{
+		MSGBODY *body = (MSGBODY*)wParam;
+		ShowGroupDlg(body->groupid,body->imid,(TCHAR*)body->msg);
 	}
 	else if (uMsg == MSG_GETFRIEND)
 	{
@@ -839,9 +929,42 @@ LRESULT MainFrame::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 		AddUIList(ADD_LIST_FRIEND,*friendinfo);
 
 	}
+	else if (uMsg == MSG_GET_GROUP)
+	{
+		GroupsListItemInfo *group = (GroupsListItemInfo*)wParam;
+        AddGroupList(*group);
+	}
+	else if (uMsg == MSG_GET_GROUP_USER)
+	{
+		GroupsListItemInfo *user = (GroupsListItemInfo*)wParam;
+		int *group_id = (int*)lParam;
+
+		map<unsigned int, ChatGroupDialog*>::iterator mapit;
+		mapit=m_mChatgroupDlg.find((*group_id));
+		if (mapit != m_mChatgroupDlg.end())
+		{
+			ChatGroupDialog *pdlg = mapit->second;
+			if (pdlg->GetHWND())
+			{
+		        pdlg->AddGroupItem((*user));
+
+				//此时如果有消息则发送
+				if(m_create_group_msg.groupid == (*group_id) && 
+					m_create_group_msg.flag ==true          &&
+					m_create_group_msg.imid == (*user).id)
+				{
+                     pdlg->SendMsg((*user).nick_name,m_create_group_msg.msg);
+					 m_create_group_msg.flag=false;
+				}
+
+			}
+		}
+
+        
+	}
 	return 0;
 }
-void MainFrame::SetUser(LPCTSTR strName,LPCTSTR sign)
+int MainFrame::SetUser(LPCTSTR strName,LPCTSTR sign)
 {
 	CLabelUI *pUser = static_cast<CLabelUI *>(paint_manager_.FindControl(_T("TextName")));
 	CRichEditUI *psign = static_cast<CRichEditUI*>(paint_manager_.FindControl(_T("signaturetip")));
@@ -853,38 +976,61 @@ void MainFrame::SetUser(LPCTSTR strName,LPCTSTR sign)
 		_stprintf((TCHAR*)m_strUser.c_str(),_T("%s"),strName);
 		//m_strUser = strName;
 	}
+	else
+	{
+		DbgPrint("get user control error!\n");
+		return -1;
+	}
 
 	if (psign)
 	{
 		psign->SetText(sign);
 		psign->Invalidate();
 	}
-
-	_stprintf((TCHAR*)m_myself_info.nick_name,_T("%s"),strName);
-	_stprintf((TCHAR*)m_myself_info.description,_T("%s"),sign);
+	else
+	{
+		DbgPrint("get sign control error!\n");
+		return -1;
+	}
+	_stprintf((TCHAR*)g_myself_info.nick_name,_T("%s"),strName);
+	_stprintf((TCHAR*)g_myself_info.description,_T("%s"),sign);
+	g_myself_info.id = g_ClientID;
 
 	//现在获取好友信息了.如果用户名不为空哈
-    if(_tcscmp(strName,_T(""))!=0)
+	if(_tcscmp(strName,_T(""))!=0)
 	{
-	
-        m_pTcpCommunication->SendBuffer(CMD_GET_FRIEND,_T("3"),1);
-	}
 
-	
-	
+		m_pTcpCommunication->SendBuffer(CMD_GET_FRIEND,_T("3"),1);
+	}
+	return 0;
 }
-void MainFrame::FindFriend(unsigned int imid)
+int MainFrame::FindFriend(unsigned int imid)
 {
 	for (std::vector<FriendListItemInfo>::const_iterator citer = vec_friends.begin(); citer != vec_friends.end(); ++citer)
 	{
 		if (citer->id == imid)
 		{
 			m_friend_info = *citer;
-			break;
+			//break;
+			return 0;
 		}
 	}
+	return -1;
 }
-void MainFrame::SHowChatDlg(unsigned int imid,TCHAR *strmsg)
+int MainFrame::FindGroup(unsigned int groupid)
+{
+	for (std::vector<GroupsListItemInfo>::const_iterator citer = vec_group.begin(); citer != vec_group.end(); ++citer)
+	{
+		if (citer->id == groupid)
+		{
+			m_group_info = *citer;
+			//break;
+			return 0;
+		}
+	}
+	return -1;
+}
+int MainFrame::SHowChatDlg(unsigned int imid,TCHAR *strmsg)
 {
 	CControlUI* background = paint_manager_.FindControl(kBackgroundControlName);
 	if ((background != NULL))
@@ -896,17 +1042,19 @@ void MainFrame::SHowChatDlg(unsigned int imid,TCHAR *strmsg)
 
 		}
 	}
-	FindFriend(imid);
+	if (-1==FindFriend(imid))
+	{
+		//no find
+		return -1;
+	}
 	 //找到
 	map<unsigned int, ChatDialog*>::iterator mapit;
 	mapit=m_mChatDlg.find(imid);
 	if (mapit != m_mChatDlg.end())
 	{
-
-
 		ChatDialog *pdlg = mapit->second;
 		pdlg->ShowWindow(SW_SHOW);
-		if (strlen(strmsg)>0>0)
+		if (_tcslen(strmsg)>0)
 		{
 
 			pdlg->SendMsg(m_friend_info.nick_name,strmsg);
@@ -915,9 +1063,12 @@ void MainFrame::SHowChatDlg(unsigned int imid,TCHAR *strmsg)
 	}
 	else
 	{
-		ChatDialog* pChatDialog = new ChatDialog(this,m_szbakimage, background->GetBkColor(), m_myself_info, m_friend_info);
+		ChatDialog* pChatDialog = new ChatDialog(this,m_szbakimage, background->GetBkColor(), m_friend_info);
 		if( pChatDialog == NULL )
-			return;
+		{
+			DbgPrint("new chat dlg error!\n");
+			return -1;
+		}
 		pChatDialog->Create(NULL,(LPCTSTR)m_friend_info.nick_name, UI_WNDSTYLE_FRAME | WS_POPUP,  NULL, 0, 0, 0, 0);
 		skin_changed_observer_.AddReceiver(pChatDialog);
 
@@ -925,7 +1076,7 @@ void MainFrame::SHowChatDlg(unsigned int imid,TCHAR *strmsg)
 		pChatDialog->ShowWindow(SW_SHOW);
 	    m_mChatDlg.insert( pair<int, ChatDialog*>(m_friend_info.id,pChatDialog));
 	
-		if (strlen(strmsg)>0)
+		if (_tcslen(strmsg)>0)
 		{	
              //from who
 			pChatDialog->SendMsg(m_friend_info.nick_name,strmsg);
@@ -933,6 +1084,106 @@ void MainFrame::SHowChatDlg(unsigned int imid,TCHAR *strmsg)
 
 	}
 
+	return 0;
+
+}
+int MainFrame::ShowGroupDlg(unsigned int groupid,unsigned int imno,TCHAR* strmsg)
+{
+	CControlUI* background = paint_manager_.FindControl(kBackgroundControlName);
+	if ((background != NULL))
+	{
+		if (_tcslen(background->GetBkImage()) > 0)
+		{
+
+			_stprintf_s(m_szbakimage, MAX_PATH - 1, _T("bg%d.png"), bk_image_index_);
+
+		}
+	}
+	if (-1 == FindGroup(groupid))
+	{
+		//no find 
+		return -1;
+	}
+	//找到
+	map<unsigned int, ChatGroupDialog*>::iterator mapit;
+	mapit=m_mChatgroupDlg.find(groupid);
+	if (mapit != m_mChatgroupDlg.end())
+	{
+
+
+		ChatGroupDialog *pdlg = mapit->second;
+		pdlg->ShowWindow(SW_SHOW);
+		if (_tcslen(strmsg)>0)
+		{
+
+			//pdlg->SendMsg(imno,strmsg);
+			CStdString name;
+			if (0 == pdlg->FindUser(imno,name))
+			{
+				if (!name.IsEmpty())
+				{
+					pdlg->SendMsg(name,strmsg);
+				}
+			}
+		}
+
+	}
+	else
+	{
+		ChatGroupDialog* pChatGroupDialog = new ChatGroupDialog(this,m_szbakimage, background->GetBkColor(), m_group_info);
+		if( pChatGroupDialog == NULL )
+		{
+			DbgPrint("new chat group dlg error!\n");
+			return -1;
+		}
+		pChatGroupDialog->Create(NULL,(LPCTSTR)m_group_info.nick_name, UI_WNDSTYLE_FRAME | WS_POPUP,  NULL, 0, 0, 0, 0);
+
+		//send msg to get group user, only new group dlg need to send this msg
+		//获取群信息
+		if (m_pTcpCommunication)
+		{
+			m_pTcpCommunication->SendGetGroupUserMsg(m_group_info.id);
+		}
+		skin_changed_observer_.AddReceiver(pChatGroupDialog);
+		//Sleep(100);
+		pChatGroupDialog->CenterWindow();
+		pChatGroupDialog->ShowWindow(SW_SHOW);
+		m_mChatgroupDlg.insert( pair<int, ChatGroupDialog*>(m_group_info.id,pChatGroupDialog));
+		if (_tcslen(strmsg)>0)
+		{
+			m_create_group_msg.flag=true;
+			m_create_group_msg.groupid = groupid;
+			m_create_group_msg.imid=imno;
+			m_create_group_msg.msg.Format(_T("%s"),strmsg);
+		}
+
+
+		//if (_tcslen(strmsg)>0)
+		//{	
+		//	//from who
+		//	/*for (int i = 0; i < 10 ;i++)
+		//	{
+		//		CStdString name;
+		//		if (0 == pChatGroupDialog->FindUser(imno,name))
+		//		{
+		//			if (!name.IsEmpty())
+		//			{
+		//				pChatGroupDialog->SendMsg(name,strmsg);
+		//			}
+		//		}
+		//		Sleep(100);*/
+
+		//	MSGBODY  msgbody;
+		//	msgbody.imid = imno;
+		//	msgbody.groupid = groupid;
+		//	_stprintf(msgbody.msg,_T("%s"),strmsg);
+		//	PostMessage(MSG_HAVEDATA_GROUP,(WPARAM)&msgbody,0);
+	
+
+		//}
+
+	}
+	return 0;
 }
 bool MainFrame::CreateOffBmp(LPCTSTR onBmp,LPCTSTR offbmp)
 {

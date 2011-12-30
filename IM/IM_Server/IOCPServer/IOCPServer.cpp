@@ -178,7 +178,7 @@ void CIOCPServer::MainLoop()
 
         if (iReturnCode == WAIT_FAILED)
         {
-			g_pSvrLog->AddRunLog(LL_DEBUG, "WSAWaitForMultipleEvents failed: %d", WSAGetLastError());
+			g_pSvrLog->LogPrintf("WSAWaitForMultipleEvents failed: %d", WSAGetLastError());
             continue;
         }
         else if (iReturnCode == WAIT_TIMEOUT)
@@ -227,7 +227,7 @@ void CIOCPServer::MainLoop()
 					
 					if (iReturnCode == SOCKET_ERROR)
 					{
-						g_pSvrLog->AddRunLog(LL_DEBUG, "WSAEnumNetworkEvents failed: %d",	WSAGetLastError());
+						g_pSvrLog->LogPrintf("WSAEnumNetworkEvents failed: %d",	WSAGetLastError());
 					}
 					if ((ne.lNetworkEvents & FD_ACCEPT) == FD_ACCEPT)
 					{
@@ -283,7 +283,7 @@ int CIOCPServer::PostAccept(CClient* pClient)
     pClient->m_skClient = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (pClient->m_skClient == INVALID_SOCKET)
     {
-		g_pSvrLog->AddRunLog(LL_DEBUG, "PostAccept: socket failed: %d", WSAGetLastError());
+		g_pSvrLog->LogPrintf("PostAccept: socket failed: %d", WSAGetLastError());
         return -1;
     }
 	int zero = 0;

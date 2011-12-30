@@ -32,17 +32,21 @@ CColorPicker::CColorPicker(ChatDialog* chat_dialog, POINT ptMouse)
 : based_point_(ptMouse)
 , chat_dialog_(chat_dialog)
 {
-	Create(NULL, _T("color"), WS_POPUP, WS_EX_TOOLWINDOW, 0, 0);
+	chat_dialog_ = NULL;
+	chat_group_dialog_ = NULL;
+	Create(NULL, _T("colorChat"), WS_POPUP, WS_EX_TOOLWINDOW, 0, 0);
 	ShowWindow(true);
 }
 
-CColorPicker::CColorPicker(ChatGroupDialog* chat_dialog, POINT ptMouse)
-: based_point_(ptMouse)
-, chat_group_dialog_(chat_dialog)
-{
-	Create(NULL, _T("color"), WS_POPUP, WS_EX_TOOLWINDOW, 0, 0);
-	ShowWindow(true);
-}
+ CColorPicker::CColorPicker(ChatGroupDialog* chat_dialog, POINT ptMouse)
+ : based_point_(ptMouse)
+ , chat_group_dialog_(chat_dialog)
+ {
+	chat_dialog_ = NULL;
+	chat_group_dialog_ = NULL;
+ 	Create(NULL, _T("colorGroup"), WS_POPUP, WS_EX_TOOLWINDOW, 0, 0);
+ 	ShowWindow(true);
+ }
 
 LPCTSTR CColorPicker::GetWindowClassName() const 
 { 
@@ -82,6 +86,7 @@ void CColorPicker::Notify(TNotifyUI& msg)
 
 void CColorPicker::Init()
 {
+	//5ÐÐ8ÁÐ
 	CVerticalLayoutUI* pColorContiner = static_cast<CVerticalLayoutUI*>(paint_manager_.FindControl(_T("color")));
 	for (int i = 0; (i < 5) && (pColorContiner != NULL); i ++)
 	{
@@ -114,7 +119,7 @@ tString CColorPicker::GetSkinFile()
 
 tString CColorPicker::GetSkinFolder()
 {
-	return tString(CPaintManagerUI::GetInstancePath()) + _T("skin\\");
+	return tString(CPaintManagerUI::GetInstancePath()) + _T("skin\\QQRes\\");
 }
 
 LRESULT CColorPicker::OnKillFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)

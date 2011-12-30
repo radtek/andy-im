@@ -482,6 +482,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MainUI\Emotion.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MainUI\Emotion.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MainUI\Emotionlist.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MainUI\Emotionlist.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MAINUI\main_frame.cpp"
 				>
 			</File>

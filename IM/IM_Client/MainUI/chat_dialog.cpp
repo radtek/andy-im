@@ -7,7 +7,7 @@
 #include "ColorPicker.h"
 #include "main_frame.h"
 #include <atltime.h>
-
+#include "Emotion.h"
 #if USE(ZIP_SKIN)
 static const TCHAR* const kResourceSkinZipFileName = _T("QQRes.zip");
 #endif
@@ -58,7 +58,8 @@ ChatDialog::ChatDialog(MainFrame * frame_wnd, const tString& bgimage, DWORD bkco
 , font_size_(12)
 , font_face_name_(_T("Î¢ÈíÑÅºÚ"))
 , m_iFriendPort(0)
-{}
+{
+}
 
 ChatDialog::~ChatDialog()
 {
@@ -343,35 +344,21 @@ void ChatDialog::Notify(TNotifyUI& msg)
 		}
 		else if (_tcsicmp(msg.pSender->GetName(), kMinButtonControlName) == 0)
 		{
-#if defined(UNDER_CE)
-			::ShowWindow(m_hWnd, SW_MINIMIZE);
-#else
+
 			SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0);
-#endif
+
 		}
 		else if (_tcsicmp(msg.pSender->GetName(), kMaxButtonControlName) == 0)
 		{
-#if defined(UNDER_CE)
-			::ShowWindow(m_hWnd, SW_MAXIMIZE);
-			CControlUI* pControl = static_cast<CControlUI*>(paint_manager_.FindControl(kMaxButtonControlName));
-			if( pControl ) pControl->SetVisible(false);
-			pControl = static_cast<CControlUI*>(paint_manager_.FindControl(kRestoreButtonControlName));
-			if( pControl ) pControl->SetVisible(true);
-#else
+
 			SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-#endif
+
 		}
 		else if (_tcsicmp(msg.pSender->GetName(), kRestoreButtonControlName) == 0)
 		{
-#if defined(UNDER_CE)
-			::ShowWindow(m_hWnd, SW_RESTORE);
-			CControlUI* pControl = static_cast<CControlUI*>(paint_manager_.FindControl(kMaxButtonControlName));
-			if( pControl ) pControl->SetVisible(true);
-			pControl = static_cast<CControlUI*>(paint_manager_.FindControl(kRestoreButtonControlName));
-			if( pControl ) pControl->SetVisible(false);
-#else
+
 			SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0);
-#endif
+
 		}
 		else if (_tcsicmp(msg.pSender->GetName(), kFontButtonControlName) == 0)
 		{
@@ -389,6 +376,7 @@ void ChatDialog::Notify(TNotifyUI& msg)
 			pt.y = rcWindow.top + rcEmotionBtn.top;
 			pt.x = rcWindow.left + rcEmotionBtn.left;
 			//emotion_list_window_.SelectEmotion(pt);
+			new CEmotion(this,pt);
 		}
 		else if (_tcsicmp(msg.pSender->GetName(), kSendButtonControlName) == 0)
         {
@@ -424,7 +412,11 @@ void ChatDialog::Notify(TNotifyUI& msg)
 				frame_wnd_->m_pTcpCommunication->SendMsg(MSG_TYPE_FRIEND,imNum,sendmesg,textlen);
 				//ÏÔÊ¾ÔÚ
 				SendMsg(g_myself_info.nick_name,sText);
-				pRichEdit->SetText(_T(""));
+				//pRichEdit->SetText(_T(""));
+                //test
+				CStdString strbmp;
+				strbmp.Format("c:\\1.gif");
+				pRichEdit->InsertGif(strbmp);
 			}
 
 		}
@@ -488,7 +480,9 @@ void ChatDialog::Notify(TNotifyUI& msg)
 
 				pt.y = rcWindow.top + rcFontbar.top;
 				pt.x = rcWindow.left + rcColorBtn.left + static_cast<LONG>(rcColorBtn.right - rcColorBtn.left / 2);
-				new CColorPicker(this, pt);
+				
+			     new CColorPicker((ChatDialog*)this, pt);
+			
 			}
 		}
 		else if (_tcsicmp(msg.pSender->GetName(), kBoldButtonControlName) == 0)
@@ -564,3 +558,12 @@ LRESULT ChatDialog::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam,
 
 void ChatDialog::FontStyleChanged()
 {}
+int ChatDialog::SetInputEditImg(CStdString strimg)
+{
+	CRichEditUI* pRichEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kInputRichEditControlName));
+	if( pRichEdit == NULL ) 
+		return -1;
+	pRichEdit->SetFocus();
+	//pRichEdit->SetBkColor()
+	return 0;
+}

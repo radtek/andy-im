@@ -114,7 +114,7 @@ void CIOCPThread::HandleIO(CClient*& pClient, DWORD dwTransfered, int iError)
 	
     if (iError != 0)
     {
-        g_pSvrLog->AddRunLog(LL_DEBUG, "OP = %d; Error = %d", pClient->m_eOperation, iError);
+        g_pSvrLog->LogPrintf("OP = %d; Error = %d", pClient->m_eOperation, iError);
     }
 	
     if (iError != NO_ERROR)
@@ -148,7 +148,7 @@ void CIOCPThread::HandleIO(CClient*& pClient, DWORD dwTransfered, int iError)
         {
 			if ((WSAECONNABORTED != GetLastError()) && (WSAECONNRESET != GetLastError()))
 			{
-				g_pSvrLog->AddRunLog(LL_DEBUG, "Accept failed");
+				g_pSvrLog->LogPrintf("Accept failed");
 			}
         }
 		
@@ -177,7 +177,7 @@ void CIOCPThread::HandleIO(CClient*& pClient, DWORD dwTransfered, int iError)
     {
         if (iError != NO_ERROR)
         {
-			g_pSvrLog->AddRunLog(LL_DEBUG, "CIOCPThread::HandleIO: err = %d", iError);
+			g_pSvrLog->LogPrintf("CIOCPThread::HandleIO: err = %d", iError);
             pClient->m_eStatus = stClosed;
         }
 		

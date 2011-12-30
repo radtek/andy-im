@@ -7,11 +7,11 @@
         <VerticalLayout name="VerticalLayoutUI1" bkimage="file=&apos;border.png&apos; corner=&apos;5,5,5,5&apos;" inset="1,0,1,0">
             <HorizontalLayout name="HorizontalLayoutUI1" height="45">
                 <VerticalLayout name="VerticalLayoutUI2" width="48" inset="0,1,0,0">
-                    <Button name="logo" width="44" height="44" bkimage="file=&apos;groups.png&apos; corner=&apos;5,5,5,5&apos;" maxheight="44" maxwidth="44" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" />
+                    <Button name="logogroup" width="44" height="44" bkimage="file=&apos;groups.png&apos; corner=&apos;5,5,5,5&apos;" maxheight="44" maxwidth="44" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" />
                 </VerticalLayout>
                 <VerticalLayout name="VerticalLayoutUI3" inset="2,6,2,0">
-                    <Text name="nickname" text="tojen" width="200" height="16" textpadding="2,0,2,0" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" font="1" align="wrap" />
-				<RichEdit name="description"  multiline="false" width="200" inset="0,0,0,0" textcolor="#FFFFFFFF" height="18" enabled="true" rich="false"/>
+                    <Text name="nicknamegroup" width="200" height="16" textpadding="2,0,2,0" textcolor="#FFFFFFFF" disabledtextcolor="#FFA7A6AA" font="1" align="wrap" />
+				<RichEdit name="descriptiongroup"  multiline="false" width="200" inset="0,0,0,0" textcolor="#FFFFFFFF" height="18" enabled="true" rich="false"/>
                 </VerticalLayout>
                 <VerticalLayout name="VerticalLayoutUI4" width="94">
                     <Button name="minbtn" float="true" pos="0,0,0,0" width="28" height="19" maxheight="19" maxwidth="28" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file=&apos;btn_mini_normal.png&apos;" hotimage="btn_mini_highlight.png" pushedimage="btn_mini_down.png" />
@@ -38,8 +38,8 @@
                     <HorizontalLayout name="HorizontalLayoutUI3" bordersize="0" bkimage="file=&apos;chat_mid_bk.png&apos; source=&apos;0,10,2,26&apos;" bordercolor="#FF999933" inset="5,0,0,0">
           <RichEdit name="view_richedit" multiline="true" vscrollbar="true" autovscroll="true" rich="true" readonly="true" />
                     </HorizontalLayout>
-                    <HorizontalLayout name="fontbar" height="30" bkimage="file=&apos;font_bk.bmp&apos;" inset="4,4,4,4">
-                        <Combo normalimage="file=&apos;combo.png&apos; source=&apos;0,0,100,22&apos; corner=&apos;2,2,20,2&apos;" hotimage="file=&apos;combo.png&apos; source=&apos;0,22,100,44&apos; corner=&apos;2,2,22,2&apos;" pushedimage="file=&apos;combo.png&apos; source=&apos;0,44,100,66&apos; corner=&apos;2,2,22,2&apos;" dropboxsize="0,150" itemtextcolor="#FF000000" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" name="font_type" width="100" height="22">
+                    <HorizontalLayout name="fontbargroup" height="30" bkimage="file=&apos;font_bk.bmp&apos;" inset="4,4,4,4">
+                        <Combo normalimage="file=&apos;combo.png&apos; source=&apos;0,0,100,22&apos; corner=&apos;2,2,20,2&apos;" hotimage="file=&apos;combo.png&apos; source=&apos;0,22,100,44&apos; corner=&apos;2,2,22,2&apos;" pushedimage="file=&apos;combo.png&apos; source=&apos;0,44,100,66&apos; corner=&apos;2,2,22,2&apos;" dropboxsize="0,150" itemtextcolor="#FF000000" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" name="font_typegroup" width="100" height="22">
                             <ListLabelElement />
                             <ListLabelElement />
                             <ListLabelElement />
@@ -66,13 +66,13 @@
                             <ListLabelElement />
                         </Combo>
                         <Control name="ControlUI6" width="5" />
-                        <Option name="boldbtn" text="{i Bold.png}{/i}" width="22" height="22" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
-                        <Option name="italicbtn" text="{i Italic.png}{/i}" width="22" height="22" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
-                        <Option name="underlinebtn" text="{i underline.png}{/i}" width="22" height="22" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
-                        <Option name="colorbtn" text="{i color.png}{/i}" width="22" height="22" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
+                        <Option name="boldbtngroup" text="{i Bold.png}{/i}" width="22" height="22" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
+                        <Option name="italicbtngroup" text="{i Italic.png}{/i}" width="22" height="22" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
+                        <Option name="underlinebtngroup" text="{i underline.png}{/i}" width="22" height="22" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
+                        <Option name="colorbtngroup" text="{i color.png}{/i}" width="22" height="22" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" showhtml="true" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
                     </HorizontalLayout>
                     <HorizontalLayout name="HorizontalLayoutUI4" height="28" inset="2,4,2,4">
-                        <Option name="fontbtn" width="24" height="20" bkimage="file=&apos;icon_font.png&apos; dest=&apos;2,0,22,20&apos;" maxheight="20" maxwidth="24" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
+                        <Option name="fontbtngroup" width="24" height="20" bkimage="file=&apos;icon_font.png&apos; dest=&apos;2,0,22,20&apos;" maxheight="20" maxwidth="24" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
                         <Control name="ControlUI7" width="5" />
                         <Option name="emotionbtn" width="24" height="20" bkimage="file=&apos;icon_face.png&apos; dest=&apos;2,0,22,20&apos;" maxheight="20" maxwidth="24" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" hotimage="file=&apos;btn_hot.png&apos; corner=&apos;2,3,2,2&apos;" selectedimage="file=&apos;btn_push.png&apos; corner=&apos;2,5,2,2&apos;" />
                         <Control name="ControlUI8" width="5" />

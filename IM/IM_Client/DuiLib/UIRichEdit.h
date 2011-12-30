@@ -6,7 +6,6 @@
 namespace DuiLib {
 
 class CTxtWinHost;
-
 class UILIB_API CRichEditUI : public CContainerUI, public IMessageFilterUI
 {
 public:
@@ -92,6 +91,17 @@ public:
     long StreamIn(int nFormat, EDITSTREAM &es);
     long StreamOut(int nFormat, EDITSTREAM &es);
 
+	/*--------------------------------------------------------------------------
+*	函数名：InsertBitmap
+*
+*	功能  ：底层的一个InsertBitmap，使用OLE容器，向CRichEditCtrl中插入表情。
+*			根据位图句柄创建OleCreateStaticFromData();用这个函数可以把资源中的图片插入到文本框中
+*
+*	头文件：<Richole.h>、<afxodlgs.h>
+--------------------------------------------------------------------------*/
+     void InsertBitmap(HBITMAP hBitmap);	//底层的一个InsertBitmap
+     void InsertBitmap(CStdString strbmp);
+	 void InsertGif(CStdString strGif);
     void DoInit();
     // 注意：TxSendMessage和SendMessage是有区别的，TxSendMessage没有multibyte和unicode自动转换的功能，
     // 而richedit2.0内部是以unicode实现的，在multibyte程序中，必须自己处理unicode到multibyte的转换

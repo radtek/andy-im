@@ -1189,13 +1189,10 @@ bool MainFrame::CreateOffBmp(LPCTSTR onBmp,LPCTSTR offbmp)
 {
 	CStdString str=CPaintManagerUI::GetInstancePath();
 	//CStdString strface,strfaceout;
-	char strface[256]={0};
-	char strfaceout[256]={0};
-	//X:\andy_im\IM\Bin\skin\face  %s\\skin\\face\\user.bmp"
-	//strface.Format("%s\\skin\\face\\%s",str,onBmp);
-	//strfaceout.Format("%s\\skin\\face\\%s",str,offbmp);
-	sprintf(strface,"..\\skin\\face\\%s",onBmp);
-	sprintf(strfaceout,"..\\skin\\face\\%s",offbmp);
+	TCHAR strface[256]={0};
+	TCHAR strfaceout[256]={0};
+	_stprintf(strface,_T("..\\skin\\face\\%s"),onBmp);
+	_stprintf(strfaceout,_T("..\\skin\\face\\%s"),offbmp);
 	andyFile file((LPCTSTR)strfaceout);
 	if (file.isExist())
 	{

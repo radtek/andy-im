@@ -28,9 +28,14 @@ EXTERN_C const IID IID_ITextHost = { /* c5bdd8d0-d26e-11ce-a89e-00aa006cadc5 */
 #ifndef HIMETRIC_PER_INCH
 #define HIMETRIC_PER_INCH 2540
 #endif
-
+#include <Richole.h>
 #include <textserv.h>
+//#include <afxole.h>
+//import dll to show gif
+//#import "ExFile\\MaiYuanOleImage.dll" no_namespace,   named_guids
 
+#import "DLL\\GifOle.dll" named_guids
+using namespace GIFOLELib;
 class CTxtWinHost : public ITextHost
 {
 public:
@@ -1015,6 +1020,13 @@ CRichEditUI::CRichEditUI() : m_pTwh(NULL), m_bVScrollBarFixing(false), m_bWantTa
     m_bWantCtrlReturn(true), m_bRich(true), m_bReadOnly(false), m_bWordWrap(false), m_dwTextColor(0), m_iFont(-1), 
     m_iLimitText(cInitTextMax), m_lTwhStyle(ES_MULTILINE)
 {
+	//INITCOMMONCONTROLSEX InitCtrls;
+	//InitCtrls.dwSize = sizeof(InitCtrls);
+	// 将它设置为包括所有要在应用程序中使用的
+	// 公共控件类。
+//	InitCtrls.dwICC = ICC_WIN95_CLASSES;
+	//InitCommonControlsEx(&InitCtrls);
+	//WinExec("regsvr32 /s GifOle.dll",SW_HIDE);
 }
 
 CRichEditUI::~CRichEditUI()
@@ -1913,22 +1925,56 @@ void CRichEditUI::DoPaint(HDC hDC, const RECT& rcPaint)
     if( m_pTwh ) {
         RECT rc;
         m_pTwh->GetControlRect(&rc);
+		//FillRect((HDC) hDC, &rc,(HBRUSH) GetStockObject(GRAY_BRUSH));
         // Remember wparam is actually the hdc and lparam is the update
         // rect because this message has been preprocessed by the window.
-        m_pTwh->GetTextServices()->TxDraw(
-            DVASPECT_CONTENT,  		// Draw Aspect
-            /*-1*/0,				// Lindex
-            NULL,					// Info for drawing optimazation
-            NULL,					// target device information
-            hDC,			        // Draw device HDC
-            NULL, 				   	// Target device HDC
-            (RECTL*)&rc,			// Bounding client rectangle
-            NULL, 		            // Clipping rectangle for metafiles
-            (RECT*)&rcPaint,		// Update rectangle
-            NULL, 	   				// Call back function
-            NULL,					// Call back parameter
-            0);				        // What view of the object
-        if( m_bVScrollBarFixing ) {
+		//FrameRect((HDC) wparam, &rcClient, 
+			//(HBRUSH) GetStockObject(BLACK_BRUSH));
+
+		//RECT rcClient;
+		RECT *prc = NULL;
+		LONG lViewId = TXTVIEW_ACTIVE;
+
+		if (!m_pTwh->GetActiveState())
+		{
+			//GetControlRect(&rcClient);
+			//prc = &rcClient;
+			lViewId = TXTVIEW_INACTIVE;
+		}
+
+		// Remember wparam is actually the hdc and lparam is the update
+		// rect because this message has been preprocessed by the window.
+		m_pTwh->GetTextServices()->TxDraw(
+			DVASPECT_CONTENT,          // Draw Aspect
+			/*-1*/0,                        // Lindex
+			NULL,                    // Info for drawing optimazation
+			NULL,                    // target device information
+			hDC,            // Draw device HDC
+			NULL,                        // Target device HDC
+			(RECTL *) &rc,            // Bounding client rectangle
+			NULL,                     // Clipping rectangle for metafiles
+			(RECT *) &rcPaint,        // Update rectangle
+			NULL,                        // Call back function
+			NULL,                    // Call back parameter
+			lViewId);                // What view of the object                
+
+		//if(TxGetEffects() == TXTEFFECT_SUNKEN)
+			//DrawSunkenBorder(hwnd, (HDC) wparam);
+        //m_pTwh->GetTextServices()->TxDraw(
+        //    DVASPECT_CONTENT,  		// Draw Aspect
+        //    /*-1*/0,				// Lindex
+        //    NULL,					// Info for drawing optimazation
+        //    NULL,					// target device information
+        //    hDC,			        // Draw device HDC
+        //    NULL, 				   	// Target device HDC
+        //    (RECTL*)&rc,			// Bounding client rectangle
+        //    NULL, 		            // Clipping rectangle for metafiles
+        //    (RECT*)&rcPaint,		// Update rectangle
+        //    NULL, 	   				// Call back function
+        //    NULL,					// Call back parameter
+        //    TXTVIEW_ACTIVE);				        // What view of the object
+        if( m_bVScrollBarFixing ) 
+		{
             LONG lWidth = rc.right - rc.left + m_pVerticalScrollBar->GetFixedWidth();
             LONG lHeight = 0;
             SIZEL szExtent = { -1, -1 };
@@ -1941,7 +1987,8 @@ void CRichEditUI::DoPaint(HDC hDC, const RECT& rcPaint)
                 &szExtent,
                 &lWidth,
                 &lHeight);
-            if( lHeight <= rc.bottom - rc.top ) {
+            if( lHeight <= rc.bottom - rc.top ) 
+			{
                 NeedUpdate();
             }
         }
@@ -2139,4 +2186,148 @@ LRESULT CRichEditUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, boo
     return lResult;
 }
 
+void CRichEditUI::InsertBitmap(HBITMAP hBitmap)
+{
+	STGMEDIUM stgm;
+	stgm.tymed = TYMED_GDI;    // Storage medium = HBITMAP handle
+	stgm.hBitmap = hBitmap;
+	stgm.pUnkForRelease = NULL; // Use ReleaseStgMedium
+
+	FORMATETC fm;
+	fm.cfFormat = CF_BITMAP;    // Clipboard format = CF_BITMAP
+	fm.ptd = NULL;       // Target Device = Screen
+	fm.dwAspect = DVASPECT_CONTENT;   // Level of detail = Full content
+	fm.lindex = -1;       // Index = Not applicaple
+	fm.tymed = TYMED_GDI;  
+
+	//创建输入数据源
+	IStorage *pStorage; 
+
+	//分配内存
+	LPLOCKBYTES lpLockBytes = NULL;
+	SCODE sc = ::CreateILockBytesOnHGlobal(NULL, TRUE, &lpLockBytes);
+	int err = GetLastError();
+	int a = (int)sc;
+	if ((int)sc !=S_OK)
+	{
+		AfxThrowOleException(sc);
+		return;
+	}
+	ASSERT(lpLockBytes != NULL);
+	sc = ::StgCreateDocfileOnILockBytes(lpLockBytes,
+		STGM_SHARE_EXCLUSIVE|STGM_CREATE|STGM_READWRITE, 0, &pStorage);
+	if (sc != S_OK)
+	{
+		VERIFY(lpLockBytes->Release() == 0);
+		lpLockBytes->Release();
+		lpLockBytes = NULL;
+		AfxThrowOleException(sc);
+		return;
+	}
+	ASSERT(pStorage != NULL);
+	COleDataSource *pDataSource = new COleDataSource;
+	pDataSource->CacheData(CF_BITMAP, &stgm);
+	LPDATAOBJECT lpDataObject = 
+		(LPDATAOBJECT)pDataSource->GetInterface(&IID_IDataObject);
+
+	//获取RichEdit的OLEClientSite
+	LPOLECLIENTSITE lpClientSite;
+	IRichEditOle* pOle=NULL;  
+	LRESULT lResult;
+	m_pTwh->GetTextServices()->TxSendMessage(EM_GETOLEINTERFACE, 0, (LPARAM)&pOle, &lResult);
+	assert(pOle); 
+	pOle->GetClientSite( &lpClientSite);
+	
+	//创建OLE对象
+	IOleObject *pOleObject;
+	sc = OleCreateStaticFromData(lpDataObject,IID_IOleObject,OLERENDER_FORMAT,
+		&fm,lpClientSite,pStorage,(void **)&pOleObject);
+	if(sc!=S_OK)
+		AfxThrowOleException(sc);
+
+	//插入OLE对象
+	REOBJECT reobject;
+	ZeroMemory(&reobject, sizeof(REOBJECT));
+	reobject.cbStruct = sizeof(REOBJECT);
+
+	CLSID clsid;
+	sc = pOleObject->GetUserClassID(&clsid);
+	if (sc != S_OK)
+		AfxThrowOleException(sc);
+
+	reobject.clsid = clsid;
+	reobject.cp = REO_CP_SELECTION;
+	reobject.dvaspect = DVASPECT_CONTENT;
+	reobject.poleobj = pOleObject;
+	reobject.polesite = lpClientSite;
+	reobject.pstg = pStorage;
+
+	HRESULT hr = pOle->InsertObject( &reobject );
+
+	delete pDataSource;
+}
+
+void CRichEditUI::InsertBitmap(CStdString strbmp)
+{
+	//CStdString strbmp;
+	//strbmp.Format("c:\\user_on.bmp");
+	HBITMAP bmp = NULL;
+	bmp = (HBITMAP)::LoadImage(NULL, strbmp.GetData(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+
+	if(bmp==NULL)
+	{
+		throw _T("无效的HBITMAP类型。\r\n\r\n可能的原因是:\r\n位图文件的路径不正确。");
+	}
+
+	InsertBitmap(bmp);
+}
+void CRichEditUI::InsertGif(CStdString strGif)
+{
+
+		IStorage*  lpStorage  = NULL;//存储接口
+		IOleObject*  lpOleObject  = NULL;//OLE对象
+		LPLOCKBYTES  lpLockBytes  = NULL;//LOCKBYTE
+		IOleClientSite* lpOleClientSite = NULL; 
+		IGifCtl*    pShowGif = NULL;    //控件
+		CLSID   clsid;
+		REOBJECT  reobject;
+		HRESULT   hr;
+		hr = ::CoCreateInstance(CLSID_GifCtl,NULL,CLSCTX_INPROC,IID_IGifCtl,(LPVOID*)&pShowGif);
+		pShowGif->LoadFromFile(strGif.GetData());
+		hr = pShowGif->QueryInterface(&lpOleObject);//获得数据对象接口
+		hr = lpOleObject->GetUserClassID(&clsid);
+		hr = ::CreateILockBytesOnHGlobal(NULL, TRUE, &lpLockBytes);//创建LOCKBYTE对象
+		hr = ::StgCreateDocfileOnILockBytes(lpLockBytes,//创建复合文档
+											STGM_SHARE_EXCLUSIVE|STGM_CREATE|STGM_READWRITE, 0, &lpStorage);
+
+		IRichEditOle* lpRichEditOle=NULL; 
+		LRESULT lResult;
+		m_pTwh->GetTextServices()->TxSendMessage(EM_GETOLEINTERFACE, 0, (LPARAM)&lpRichEditOle, &lResult);
+		assert(lpRichEditOle); 
+
+		if(lpRichEditOle == NULL)
+			return;
+		lpRichEditOle->GetClientSite(&lpOleClientSite);
+		ZeroMemory(&reobject, sizeof(REOBJECT));//初始化一个对象  
+		reobject.cbStruct = sizeof(REOBJECT);
+		reobject.clsid  = clsid;
+		reobject.cp   = REO_CP_SELECTION;
+		reobject.dvaspect = DVASPECT_CONTENT;
+		reobject.dwFlags = REO_BELOWBASELINE;
+		reobject.poleobj = lpOleObject;
+		reobject.polesite = lpOleClientSite;
+		reobject.pstg  = lpStorage;
+		hr =lpRichEditOle->InsertObject( &reobject );
+		OleSetContainedObject(lpOleObject,TRUE);
+		// release the interface
+		if( pShowGif     != NULL ) 
+		pShowGif->Release();
+		if( lpOleObject  != NULL )  
+		lpOleObject->Release();
+		if( lpOleClientSite != NULL )
+		lpOleClientSite->Release();
+		if( lpStorage  != NULL ) 
+		lpStorage->Release();
+
+}
 } // namespace DuiLib

@@ -3,7 +3,6 @@
 
 #include "skin_change_event.h"
 #include "UIFriends.h"
-
 class WindowImplBase;
 class MainFrame;
 class ChatDialog : public WindowImplBase, public SkinChangedReceiver
@@ -57,6 +56,8 @@ protected:
 private:
 	void FontStyleChanged();
 
+	int SetInputEditImg(CStdString strimg);
+
 private:	
 	bool emotion_timer_start_;
 
@@ -77,6 +78,7 @@ private:
 	CStdString m_strFriendip;
 
 	int m_iFriendPort;
+
 };
 
 #endif // CHARTDIALOG_HPP

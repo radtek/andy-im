@@ -20,23 +20,23 @@ const TCHAR* const kRestoreButtonControlName = _T("restorebtn");
 
 const TCHAR* const kBackgroundControlName = _T("bg");
 
-const TCHAR* const kLogoButtonControlName = _T("logo");
-const TCHAR* const kNickNameControlName = _T("nickname");
-const TCHAR* const kDescriptionControlName = _T("description");
+const TCHAR* const kLogoButtonControlName = _T("logogroup");
+const TCHAR* const kNickNameControlName = _T("nicknamegroup");
+const TCHAR* const kDescriptionControlName = _T("descriptiongroup");
 
-const TCHAR* const kFontButtonControlName = _T("fontbtn");
-const TCHAR* const kFontbarControlName = _T("fontbar");
-const TCHAR* const kFontTypeControlName = _T("font_type");
+const TCHAR* const kFontButtonControlName = _T("fontbtngroup");
+const TCHAR* const kFontbarControlName = _T("fontbargroup");
+const TCHAR* const kFontTypeControlName = _T("font_typegroup");
 const TCHAR* const kFontSizeControlName = _T("font_size");
-const TCHAR* const kBoldButtonControlName = _T("boldbtn");
-const TCHAR* const kItalicButtonControlName = _T("italicbtn");
-const TCHAR* const KUnderlineButtonControlName = _T("underlinebtn");
-const TCHAR* const kColorButtonControlName = _T("colorbtn");
+const TCHAR* const kBoldButtonControlName = _T("boldbtngroup");
+const TCHAR* const kItalicButtonControlName = _T("italicbtngroup");
+const TCHAR* const KUnderlineButtonControlName = _T("underlinebtngroup");
+const TCHAR* const kColorButtonControlName = _T("colorbtngroup");
 
 const TCHAR* const kInputRichEditControlName = _T("input_richedit");
 const TCHAR* const kViewRichEditControlName = _T("view_richedit");
 
-const TCHAR* const kEmotionButtonControlName = _T("emotionbtn");
+const TCHAR* const kEmotionButtonControlName = _T("emotionbtngroup");
 
 const TCHAR* const kSendButtonControlName = _T("sendbtn");
 
@@ -537,6 +537,18 @@ void ChatGroupDialog::Notify(TNotifyUI& msg)
 				//显示在
 				SendMsg(g_myself_info.nick_name,sText);
 				pRichEdit->SetText(_T(""));
+				//text code
+//                 CStdString strbmp;
+//				strbmp.Format("c:\\1.gif");
+//// 				HBITMAP bmp = NULL;
+//// 				bmp = (HBITMAP)::LoadImage(NULL, strbmp.GetData(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+//// 
+//// 				if(bmp==NULL)
+//// 				{
+//// 					throw "无效的HBITMAP类型。\r\n\r\n可能的原因是:\r\n位图文件的路径不正确。";
+//// 				}
+//// 
+// 				pRichEdit->InsertGif(strbmp);
 
 				int size =0;
 				size = m_vec_group.size();
@@ -578,7 +590,7 @@ void ChatGroupDialog::Notify(TNotifyUI& msg)
 
 				pt.y = rcWindow.top + rcFontbar.top;
 				pt.x = rcWindow.left + rcColorBtn.left + static_cast<LONG>(rcColorBtn.right - rcColorBtn.left / 2);
-				new CColorPicker(this, pt);
+			//	new CColorPicker(this, pt);
 			}
 		}
 		else if (_tcsicmp(msg.pSender->GetName(), kBoldButtonControlName) == 0)

@@ -36,14 +36,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 
 	HINSTANCE hInstRich = ::LoadLibrary(_T("Riched20.dll"));
 
-	::CoInitialize(NULL);
+	//::CoInitialize(NULL);
 	::OleInitialize(NULL);
+
+
 
 	_Module.Init( 0, hInstance );
 
 	WSADATA wsaData;
 	WORD wVersionRequested;
-
 	/* Ask for Winsock 2.2 functionality */
 	wVersionRequested = MAKEWORD( 2, 2 );
 	int sta = WSAStartup( wVersionRequested, &wsaData );
@@ -54,6 +55,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	HRESULT Hr = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 #endif
 	if( FAILED(Hr) ) return 0;
+
+	WinExec("regsvr32 /s GifOle.dll",SW_HIDE);
+
+	int err = GetLastError();
 
 	MainFrame* pFrame = new MainFrame();
 	if( pFrame == NULL ) return 0;

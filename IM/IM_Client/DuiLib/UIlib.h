@@ -32,12 +32,14 @@
 #else
 #define UILIB_API __declspec(dllimport)
 #endif
-
+#include <comdef.h>
+#include <olectl.h>
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
 #include <stddef.h>
 #include <richedit.h>
+#include <Richole.h>
 #include <tchar.h>
 #include <assert.h>
 #include <crtdbg.h>

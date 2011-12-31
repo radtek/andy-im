@@ -66,6 +66,16 @@ void CEmotion::Notify(TNotifyUI& msg)
 		{
 			 CButtonUI* pbutton =static_cast<CButtonUI*>(pOne);
 			 LPCTSTR strname = pbutton->GetNormalImage();
+			 CStdString strImage;
+			 CStdString FileName;
+			 FileName.Format(_T("%s"),strname);
+			 FileName = FileName.Right(FileName.GetLength() - 3);
+			 strImage.Format(_T("%s\\skin\\%s"),CPaintManagerUI::GetInstancePath().GetData(),FileName.GetData());
+			 if (m_chat_dialog_)
+			 {
+				 m_chat_dialog_->SetInputEditImg(strImage);
+				 Close();
+			 }
 		}
 	}
 }
@@ -74,8 +84,6 @@ void CEmotion::Init()
 	CStdString str=CPaintManagerUI::GetInstancePath();
 	CStdString strface;
 	strface.Format(_T("%s\\skin\\Faces\\"),str);
-	//TCHAR strface[256]={0};
-	//_stprintf(strface,_T("%s..\\skin\\face\\"),str);
 	initFileName(strface);
 	int sizeface = m_vec_FileName.size();
 

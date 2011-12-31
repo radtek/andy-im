@@ -102,6 +102,8 @@ public:
      void InsertBitmap(HBITMAP hBitmap);	//底层的一个InsertBitmap
      void InsertBitmap(CStdString strbmp);
 	 void InsertGif(CStdString strGif);
+	 //获取带表情的字符串
+	 CStdString GetEditGifStr();
     void DoInit();
     // 注意：TxSendMessage和SendMessage是有区别的，TxSendMessage没有multibyte和unicode自动转换的功能，
     // 而richedit2.0内部是以unicode实现的，在multibyte程序中，必须自己处理unicode到multibyte的转换

@@ -56,9 +56,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 #endif
 	if( FAILED(Hr) ) return 0;
 	CStdString strrgv;
-	strrgv.Format(_T("regSvr32 %s\\DLL\\GifOle.dll"),CPaintManagerUI::GetInstancePath());
+	strrgv.Format(_T("regSvr32 /s %s\\DLL\\GifOle.dll"),CPaintManagerUI::GetInstancePath());
 
-	WinExec(strrgv,SW_SHOW);
+	WinExec(strrgv,SW_HIDE);
 	//WinExec("regsvr32 /DLL/GifOle.dll",SW_SHOW);
 	int err = GetLastError();
 

@@ -384,7 +384,8 @@ void ChatDialog::Notify(TNotifyUI& msg)
 			CRichEditUI* pViewEdit = static_cast<CRichEditUI*>(paint_manager_.FindControl(kViewRichEditControlName));
 			if( pRichEdit == NULL ) return;
 			pRichEdit->SetFocus();
-			CStdString sText = pRichEdit->GetTextRange(0, pRichEdit->GetTextLength());
+			//CStdString sText = pRichEdit->GetTextRange(0, pRichEdit->GetTextLength());
+			CStdString sText=pRichEdit->GetEditGifStr();
 			if( sText.IsEmpty() ) 
 				return;
 
@@ -412,11 +413,11 @@ void ChatDialog::Notify(TNotifyUI& msg)
 				frame_wnd_->m_pTcpCommunication->SendMsg(MSG_TYPE_FRIEND,imNum,sendmesg,textlen);
 				//ÏÔÊ¾ÔÚ
 				SendMsg(g_myself_info.nick_name,sText);
-				//pRichEdit->SetText(_T(""));
+				pRichEdit->SetText(_T(""));
                 //test
-				CStdString strbmp;
-				strbmp.Format("c:\\1.gif");
-				pRichEdit->InsertGif(strbmp);
+				//CStdString strbmp;
+				//strbmp.Format("c:\\1.gif");
+				//pRichEdit->InsertGif(strbmp);
 			}
 
 		}
@@ -564,6 +565,7 @@ int ChatDialog::SetInputEditImg(CStdString strimg)
 	if( pRichEdit == NULL ) 
 		return -1;
 	pRichEdit->SetFocus();
+	pRichEdit->InsertGif(strimg);
 	//pRichEdit->SetBkColor()
 	return 0;
 }

@@ -2330,4 +2330,102 @@ void CRichEditUI::InsertGif(CStdString strGif)
 		lpStorage->Release();
 
 }
+CStdString CRichEditUI::GetEditGifStr()
+{
+	CStdString str =GetTextRange(0,GetTextLength());
+	if (!str.IsEmpty())
+	{
+		HRESULT hr;
+		//Initlize COM interface
+		//hr = ::CoInitializeEx( NULL, COINIT_APARTMENTTHREADED );
+
+		//if( FAILED(hr) )
+		//	_com_issue_error(hr);
+		//如果包含图像信息，将图像添加到显示窗口中
+		//获得richtdit的com
+		IRichEditOle* pRichOle=NULL; 
+		LRESULT lResult;
+		m_pTwh->GetTextServices()->TxSendMessage(EM_GETOLEINTERFACE, 0, (LPARAM)&pRichOle, &lResult);
+		assert(pRichOle); 
+		LONG lNum = 0;
+		if (pRichOle != NULL)
+		{
+			lNum = pRichOle->GetObjectCount();
+			IOleClientSite *lpOleClientSite = NULL;
+			int position = 0;
+			int last_insert_len = 0;//上次插入插入字符的长度
+			for(LONG i=0; i<lNum; i++)
+			{
+				if (pRichOle!= NULL)
+				{
+					pRichOle->GetClientSite(&lpOleClientSite);
+				}
+				REOBJECT reObject;
+				ZeroMemory(&reObject,sizeof(REOBJECT));    //初始化一对象
+				reObject.cbStruct = sizeof(REOBJECT);
+				//
+
+				pRichOle->GetObject(i,&reObject,REO_GETOBJ_ALL_INTERFACES);
+				//////////////////////////////////////////////////////////////////////////////
+				if (lpOleClientSite != NULL)
+				{
+					CLSID clsid;
+					SCODE sc;
+					sc = reObject.poleobj->GetUserClassID(&clsid);
+					if (sc != S_OK)
+						AfxThrowOleException(sc);
+					reObject.clsid = clsid;
+					reObject.polesite = lpOleClientSite ;
+					position = reObject.cp; 
+					position = position + last_insert_len;
+
+                    HRESULT   hr;
+					IGifCtl*    pShowGif = NULL;    //控件
+					reObject.poleobj->QueryInterface(IID_IGifCtl,(void**)&pShowGif);
+					if (pShowGif != NULL)
+					{
+						//获取对象关联的文件名称
+						char chFullName[MAX_PATH] = {0};
+						//BSTR path = SysAllocString();
+
+						//path = new BSTR[255];
+				        BSTR paht;
+
+						paht = pShowGif->GetFilePath();
+						//strcpy(chFullName,(char*)(*path));
+						CString csFullName = chFullName;
+						int pos = csFullName.ReverseFind('\\');
+						int nLen = strlen(csFullName.GetBuffer(0));
+						CString csTmp = csFullName.Right(nLen-pos-1);
+						CString strFaceNum;
+						strFaceNum = csTmp.Mid(0,csTmp.GetLength() -4);
+						strFaceNum = "/" + strFaceNum;
+						//删掉源字符。插入
+						//str.d(position,1);
+						//str.Insert(position,strFaceNum);
+						//插入了字符。，position要增加
+						last_insert_len +=(strFaceNum.GetLength()-1);
+						::SysFreeString(paht);
+
+					}
+					reObject.poleobj->SetClientSite(NULL);
+					reObject.poleobj->SetClientSite(lpOleClientSite);
+					//					pShowEditOle->InsertObject(&reObject);
+					OleSetContainedObject(reObject.poleobj,TRUE);
+					lpOleClientSite->SaveObject();    
+					reObject.pstg->Release();    
+					reObject.poleobj->Release();
+				}
+			}
+			pRichOle->Release();
+			if (lpOleClientSite != NULL)
+				lpOleClientSite->Release();
+			pRichOle = NULL;
+
+		}   	
+
+	}
+	return str;
+}
+
 } // namespace DuiLib

@@ -55,7 +55,7 @@ protected:
 
 private:
 	void FontStyleChanged();
-
+public:
 	int SetInputEditImg(CStdString strimg);
 
 private:	

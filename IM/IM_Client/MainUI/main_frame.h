@@ -103,6 +103,8 @@ private:
 public:
 
 	UILogin *m_p_login;
+	//设置文件过滤标志
+	DWORD m_dwFilter;
 	std::vector<FriendListItemInfo> vec_friends;
 	map<unsigned int, ChatDialog*> m_mChatDlg;//聊天窗口
 
@@ -147,6 +149,10 @@ public:
 	//按照状态重新构造整个list
 	int UpdateFriendList();
 
+    //在指定文件夹中查找gif
+	int find_gif_in_folder(CStdString strfigname,CStdString strFolder);
+    //转义带gif的信息
+    int insert_gif_str(CRichEditUI *pRich,CStdString str);
 	//void StartListenTHread(tcpPara  &tcppara);
 };
 

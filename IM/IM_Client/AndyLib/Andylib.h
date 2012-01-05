@@ -146,6 +146,18 @@ typedef struct tagREGVALINFO
 //extern HINSTANCE	m_hInst;
 //extern HWND			m_hWnd;
 
+//文件过滤标志
+#define FILTER_FOLDER         FILE_ATTRIBUTE_DIRECTORY
+#define FILTER_ALBUM          0x10000000
+#define FILTER_PIC            0x20000000
+#define FILTER_MEDIA          0x40000000
+#define FILTER_OTHER          0x80000000
+#define FILTER_HIDDEN			FILE_ATTRIBUTE_HIDDEN
+
+#define THUMB_MASK				0x10000000
+#define SIZE_MASK					0x0FFFFFFF
+
+
 #define xchg(a,b) (b)^=(a)^=(b)^=(a)
 
 #define MASK_MATCH(check,mask)	(((check) & (mask)) == (mask))

@@ -14,16 +14,6 @@ const TCHAR* const kTabName = _T("tabs");
 const TCHAR* const kVLayoutList=_T("emotion_list");
 
 
-//文件过滤标志
-#define FILTER_FOLDER         FILE_ATTRIBUTE_DIRECTORY
-#define FILTER_ALBUM          0x10000000
-#define FILTER_PIC            0x20000000
-#define FILTER_MEDIA          0x40000000
-#define FILTER_OTHER          0x80000000
-#define FILTER_HIDDEN			FILE_ATTRIBUTE_HIDDEN
-
-#define THUMB_MASK				0x10000000
-#define SIZE_MASK					0x0FFFFFFF
 
 
 CEmotion::CEmotion(ChatDialog* chat_dialog, POINT ptMouse)
@@ -159,27 +149,15 @@ int CEmotion::initFileName(CStdString folder)
 			str.toLower();
 			dwAttr = rf.GetAttrib() & (FILTER_FOLDER|FILTER_HIDDEN|FILE_ATTRIBUTE_ARCHIVE);
 			dwCheck = m_dwFilter & dwAttr;
-			//if(MASK_MATCH(dwAttr,FILTER_HIDDEN) && !MASK_MATCH(dwCheck,FILTER_HIDDEN))
-				//dwCheck = 0;
 			if((dwAttr != 0xFFFFFFFF /*&& dwCheck > 0*/) && (/*MASK_MATCH(dwCheck,FILTER_FOLDER) ||*/
 				(/*MASK_MATCH(m_dwFilter,FILTER_PIC) && */(str == "bmp" || str == "jpg" || 
 				str == "jpeg" || str == "gif" || str == "pcx" || str == "png")) /*||*/
 				/*MASK_MATCH(m_dwFilter,FILTER_OTHER)*/))
 			{				
-				////index = m_fileview->GetCount();				
-				//SHGetFileInfo((LPCTSTR)rf.Fullname(), 
-				//	0,
-				//	&sfi, 
-				//	sizeof(SHFILEINFO), 
-				//	SHGFI_SYSICONINDEX|SHGFI_SMALLICON|
-				//	SHGFI_DISPLAYNAME|SHGFI_ATTRIBUTES|SHGFI_TYPENAME);
 				LPCTSTR filename = rf.Filename();
-
 				CStdString file;
 				file.Format(_T("%s"),filename);
-
 				m_vec_FileName.push_back(file);
-
 				
 			}
 		}

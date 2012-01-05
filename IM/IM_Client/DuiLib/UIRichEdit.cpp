@@ -2385,27 +2385,29 @@ CStdString CRichEditUI::GetEditGifStr()
 					if (pShowGif != NULL)
 					{
 						//获取对象关联的文件名称
-						char chFullName[MAX_PATH] = {0};
-						//BSTR path = SysAllocString();
 
-						//path = new BSTR[255];
-				        BSTR paht;
-
-						paht = pShowGif->GetFilePath();
-						//strcpy(chFullName,(char*)(*path));
-						CString csFullName = chFullName;
+						//获取对象关联的文件名称
+						//char chFullName[MAX_PATH] = {0};
+						BSTR path = pShowGif->GetFilePath();
+						//strcpy(chFullName,(LPCTSTR)path);
+						char *chFullName = _com_util::ConvertBSTRToString(path);
+						CStdString csFullName;
+						csFullName.Format(_T("%s"),chFullName);
+						//= chFullName;
 						int pos = csFullName.ReverseFind('\\');
-						int nLen = strlen(csFullName.GetBuffer(0));
-						CString csTmp = csFullName.Right(nLen-pos-1);
-						CString strFaceNum;
-						strFaceNum = csTmp.Mid(0,csTmp.GetLength() -4);
-						strFaceNum = "/" + strFaceNum;
-						//删掉源字符。插入
-						//str.d(position,1);
-						//str.Insert(position,strFaceNum);
+						int nLen = strlen(csFullName.GetData());
+						CStdString csTmp = csFullName.Right(nLen-pos-1);
+						CStdString strFaceNum;
+						//去点。gif
+						//strFaceNum = csTmp.Mid(0,csTmp.GetLength() -4);
+						strFaceNum.Format(_T("#%s"),csTmp);
+
+						CStdString  strLeft = str.Left(position);
+						CStdString strRight = str.Right(str.GetLength()-position-1);
+						str.Format(_T("%s%s%s"),strLeft.GetData(),strFaceNum.GetData(),strRight.GetData());
 						//插入了字符。，position要增加
 						last_insert_len +=(strFaceNum.GetLength()-1);
-						::SysFreeString(paht);
+						::SysFreeString(path);
 
 					}
 					reObject.poleobj->SetClientSite(NULL);

@@ -70,7 +70,8 @@ MainFrame::MainFrame()
 	root_parent_stranger=NULL;
 	root_parent_blacklist= NULL;
 	root_parent_group = NULL;
-
+	//设置文件过滤标志
+	m_dwFilter = FILTER_FOLDER|FILTER_PIC|FILE_ATTRIBUTE_NORMAL|FILE_ATTRIBUTE_ARCHIVE;
     m_mChatDlg.clear();
 	vec_friends.clear();
 	m_p_login = new UILogin(this);
@@ -1204,4 +1205,45 @@ bool MainFrame::CreateOffBmp(LPCTSTR onBmp,LPCTSTR offbmp)
 	DeleteObject(hBitmap);
 	return TRUE;
 
+}
+
+int MainFrame::find_gif_in_folder(CStdString strfigname,CStdString strFolder)
+{
+	//获取选择的目录后列出图象文件
+	andyDir dir(strFolder.GetData());
+	andyFile rf;
+	andyStr str;
+	char szFile[MAX_PATH],szSize[40];
+	int index,nSubIdx,nSize,nData;
+	FILETIME fTime;
+	DWORD dwAttr,dwCheck;
+	int nFileCnt=0,nTotalSize=0;
+	if(dir.BeginFindFile())
+	{
+		SHFILEINFO sfi;
+		while(dir.FindNext(szFile))
+		{
+			if(strcmp(szFile,"..") == 0)
+				continue;
+			rf.SetFile("%s\\%s",dir.Getdir(),szFile);
+			str = rf.Extname();
+			str.toLower();
+			dwAttr = rf.GetAttrib() & (FILTER_FOLDER|FILTER_HIDDEN|FILE_ATTRIBUTE_ARCHIVE);
+			dwCheck = m_dwFilter & dwAttr;
+			if((dwAttr != 0xFFFFFFFF ) && (str == "bmp" || str == "jpg" || 
+				str == "jpeg" || str == "gif" || str == "pcx" || str == "png"))
+			{				
+				LPCTSTR filename = rf.Filename();
+			//	CStdString file;
+				//file.Format(_T("%s"),filename);
+				if (0==_tcscmp(strfigname.GetData(),filename))
+				{
+					return 0;
+				}
+
+			}
+		}
+
+	}
+	return -1;
 }

@@ -263,6 +263,7 @@ int ChatDialog::SendMsg(CStdString name,CStdString sText)
 		DbgPrint("can not find kViewRichEditControlName\n");
 		return -1;
 	}
+	CStdString strFolder=CPaintManagerUI::GetInstancePath();
     long lSelBegin = 0, lSelEnd = 0;
     CHARFORMAT2 cf;
     ZeroMemory(&cf, sizeof(CHARFORMAT2));
@@ -302,18 +303,70 @@ int ChatDialog::SendMsg(CStdString name,CStdString sText)
     pf.dwMask = PFM_STARTINDENT;
     pf.dxStartIndent = 0;
     pRichEdit->SetParaFormat(pf);
-
     lSelEnd = lSelBegin = pRichEdit->GetTextLength();
+	//插入字符串，需转移表情
+    //pRichEdit->SetSel(-1, -1);
+    //pRichEdit->ReplaceSel(sText.GetData(), false);
+	pRichEdit->SetSel(-1,-1);
+	int m,begin;
+	begin=0;
+	CStdString temp;
+	char buff[2];
+	while(1)
+	{
+		m=sText.Find(_T("#"),begin);
+		if(-1!=m)
+		{
 
-    pRichEdit->SetSel(-1, -1);
-    pRichEdit->ReplaceSel(sText.GetData(), false);
+			temp=sText.Mid(begin,m-begin);
+			pRichEdit->ReplaceSel(temp.GetData(),false);
+            int n=sText.Find(_T(".gif"),m);
+           //find .gif
+			if (n!=-1)
+			{
+               temp = sText.Mid(m+1,n-m+3);
+			   if (frame_wnd_)
+			   {
+				   CStdString strfacefolder,strface;
+				   strfacefolder.Format(_T("%s\\skin\\Faces\\"),strFolder.GetData());
+				   strface.Format(_T("%s\\skin\\Faces\\%s"),strFolder.GetData(),temp.GetData());
+				  if (0==frame_wnd_->find_gif_in_folder(temp,strfacefolder))
+				  {
+                     pRichEdit->InsertGif(strface);
+			
+				  }
+				  begin=n+4;
+				  m=n+4;
+
+			   }
+			   else
+			   {
+				   return 0;
+			   }
+			}
+			else
+			{
+				pRichEdit->ReplaceSel(temp,false);
+				begin=n+1;
+			}
+
+		}
+		else
+		{
+			temp=sText.Mid(begin);
+			pRichEdit->SetSel(-1, -1);
+			pRichEdit->ReplaceSel(temp,false);
+			//pRichEdit->PostMessage(WM_VSCROLL, SB_BOTTOM, 0);//滚动条自动到最后一行
+			break;
+		}
+	}
 
     pRichEdit->SetSel(-1, -1);
     pRichEdit->ReplaceSel(_T("\n"), false);
 
     cf.crTextColor = RGB(0, 0, 0);
     lSelEnd = pRichEdit->GetTextLength();
-    pRichEdit->SetSel(lSelBegin, lSelEnd);
+   // pRichEdit->SetSel(lSelBegin, lSelEnd);
     pRichEdit->SetSelectionCharFormat(cf);
 
     ZeroMemory(&pf, sizeof(PARAFORMAT2));

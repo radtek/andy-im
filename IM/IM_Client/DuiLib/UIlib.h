@@ -55,6 +55,7 @@
 #include "UICombo.h"
 #include "UIActiveX.h"
 #include "UIRichEdit.h"
+#include "UIWeb.h"
 
 #include "UIMarkup.h"
 #include "UIDlgBuilder.h"

@@ -884,6 +884,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UIWeb.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="XUnzip.cpp"
 				>
 				<FileConfiguration
@@ -982,6 +994,10 @@
 			</File>
 			<File
 				RelativePath="UIRichEdit.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIWeb.h"
 				>
 			</File>
 		</Filter>

@@ -9,7 +9,6 @@
 #include "../TcpNet/TcpCommunication.h"
 #include "debug.h"
 
-
 #define  ADD_LIST_FRIEND    1
 #define  ADD_LIST_COMPANY   2
 #define  ADD_LIST_STRANGER  3
@@ -118,16 +117,13 @@ public:
 	CRITICAL_SECTION    m_sectionlist;   
 
 	//用作create group dlg的同时要发送消息
-     TAG_CREATE_GROUP_MSG  m_create_group_msg;
+    TAG_CREATE_GROUP_MSG  m_create_group_msg;
 	
-
-
 public:
 	HANDLE RegOnlyWindow(LPCTSTR szMutex);
 	int SetUser(LPCTSTR strName,LPCTSTR sign);
     //imid为IM号码，findflag指示是否根据imid查找friendlist
 	int SHowChatDlg(unsigned int imid,TCHAR* strmsg);
-
 
 	int ShowGroupDlg(unsigned int groupid,unsigned int imno,TCHAR* strmsg);
 
